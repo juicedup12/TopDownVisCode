@@ -1,0 +1,14 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/TitleScreen.unity
+    guid: d53ff70020f84964e9d20dbfeb8d6b22
+  - enabled: 1
+    path: Assets/Scenes/proc gen level testing.unity
+    guid: f20ce9af95d09384da2813af042e509c
+  m_configObjects: {}

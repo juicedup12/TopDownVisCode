@@ -1,0 +1,27 @@
+fileFormatVersion: 2
+guid: 316e4fa00cc8adc4a9a5aee343f125ec
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 94073015eacc34c1d8fc6786e43d60ca, type: 3}
+  baseLanguageID: en-US
+  stringIDs:
+  - baker-baker-0
+  - baker-baker-1
+  - baker-baker-2
+  - baker-baker-3
+  - baker-baker-4
+  - baker-pepperoni-5
+  - baker-mushroom-6
+  - baker-combo-7
+  - baker-done-8
+  compilationStatus: 1
+  isSuccesfullyCompiled: 1
+  compilationErrorMessage: 
+  baseLanguage: {fileID: 7128917941130120860, guid: 316e4fa00cc8adc4a9a5aee343f125ec,
+    type: 3}
+  localizations: []

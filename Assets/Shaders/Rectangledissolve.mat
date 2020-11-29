@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Rectangledissolve
+  m_Shader: {fileID: -6465566751694194690, guid: ae6ed192421f4b3428a7d4e8ffe06269,
+    type: 3}
+  m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: cef0ddfc2abf60a40b52558eba5a425f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_A2EEC0D7_Out_0:
+        m_Texture: {fileID: 2800000, guid: cef0ddfc2abf60a40b52558eba5a425f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - Noise_Strength: 2
+    - Vector1_11CE806E: 9.97
+    - Vector1_40A625B: 14.9
+    - Vector1_4904AB79: 0.05
+    - Vector1_71456495: 44
+    - Vector1_8C3A14C8: 42
+    - Vector1_941C095F: 1
+    - Vector1_DD0D026: 9.9
+    - Vector1_F2DE8A1B: 2.18
+    - _NoiseScale: 29.5
+    m_Colors:
+    - Color_6D549259: {r: 1.3231081, g: 0.096226044, b: 6.13441, a: 1}
+    - Square_Pos: {r: -0.5, g: -0.5, b: 0, a: 0}
+    - Vector2_2EBFEE4F: {r: 0, g: 3.71, b: 0, a: 0}
+    - Vector2_4AEDA075: {r: 0.5, g: 0.5, b: 0, a: 0}
+    - Vector2_F131B338: {r: 80, g: 0, b: 0, a: 0}
+    - World_Pos: {r: 0, g: 0, b: 0, a: 0}
