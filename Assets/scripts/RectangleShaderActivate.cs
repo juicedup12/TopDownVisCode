@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class RectangleShaderActivate : MonoBehaviour
 {
@@ -35,6 +33,12 @@ public class RectangleShaderActivate : MonoBehaviour
                 noiseStr = 1;
             }
         }
+    }
+
+
+    public void RemoveDesolve()
+    {
+        mat.SetFloat("Noise_Strength", 1);
     }
 
 

@@ -9,11 +9,11 @@
                unitycodemonkey.com
     --------------------------------------------------
  */
- 
-using System.Collections.Generic;
+
 using UnityEngine;
 
-namespace CodeMonkey.MonoBehaviours {
+namespace CodeMonkey.MonoBehaviours
+{
 
     /*
      * Easy set up for CameraFollow, it will follow the transform with zoom

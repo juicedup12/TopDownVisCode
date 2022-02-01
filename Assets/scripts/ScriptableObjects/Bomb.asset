@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b7dc0701fc744c4db96be6cb2613c78, type: 3}
+  m_Name: Bomb
+  m_EditorClassIdentifier: 
+  ItemSprite: {fileID: 21300000, guid: f5f2656494316b34399c385352a2906b, type: 3}
+  TypeOfItem: 0
+  ItemPrefab: {fileID: 1550509613332694670, guid: 8f4a71b0783471d4fb09e888597b916b,
+    type: 3}
+  spawnType: 0
+  ItemAnim: {fileID: 0}
+  ItemToAdd:
+    itemcolor: {r: 0, g: 0, b: 0, a: 0}
+    name: 
+    itemsprite: {fileID: 0}

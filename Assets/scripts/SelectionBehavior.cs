@@ -1,83 +1,92 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.Events;
 
-public class SelectionBehavior : MonoBehaviour
+namespace topdown
 {
-    public TextMeshProUGUI Yestext;
-    public TextMeshProUGUI Notext;
-    public TMP_ColorGradient onGrad;
-    public TMP_ColorGradient offGrad;
-    public GameObject UIObj;
-    bool Selecting;
-    bool Yes;
-    Item itemref;
 
-    // Start is called before the first frame update
-    void Start()
+    //the behavior that lets player chose wether or not to perform an action
+    //pressing a button 
+    public class SelectionBehavior : MonoBehaviour
     {
-        Yestext.colorGradientPreset = onGrad;
-        Notext.colorGradientPreset = offGrad;
-        Yes = true;
-    }
+        public TextMeshProUGUI Yestext;
+        public TextMeshProUGUI Notext;
+        public TextMeshProUGUI Description;
+        public GameObject firstselected;
+        public TMP_ColorGradient onGrad;
+        public TMP_ColorGradient offGrad;
+        public GameObject SelectionParent;
+        public Image img;
+        bool Selecting;
+        bool Yes;
+        Item itemref;
+        public EventSystem eventsys;
+        public Button YesButton;
+        public Button NoButton;
+        public enum ActionType { item, button, ledge}
 
-    // Update is called once per frame
-    void Update()
-    {
-        if(Selecting)
+
+        private void OnEnable()
         {
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                SwitchChoice();
-            }
-
-            if(Input.GetKeyDown(KeyCode.Space))
-            {
-                if(Yes)
-                {
-                    print("chose yes");
-                    Time.timeScale = 1;
-                    itemref.OnYes();
-                    UIObj.SetActive(false);
-
-                }
-                else
-                {
-                    print("chose no");
-                    Time.timeScale = 1;
-                    UIObj.SetActive(false);
-                }
-            }
+            //YesButton.onClick.AddListener(delegate { Time.timeScale = 1; });
+            YesButton.onClick.AddListener(delegate { print("disabling selection UI"); SelectionParent.SetActive(false); });
+            NoButton.onClick.AddListener(delegate { Time.timeScale = 1;});
         }
-    }
+
+        private void OnDisable()
+        {
+            //remove listeners so previous items don't get added
+            YesButton.onClick.RemoveAllListeners();
+        }
 
 
-    public void OpenUI(Item item)
-    {
-        itemref = item;
-        Time.timeScale = 0;
-        UIObj.SetActive(true);
-        Selecting = true;
-    }
-
-    void SwitchChoice()
-    {
-        print("switching choice");
-        if(!Yes)
+        // Start is called before the first frame update
+        void Start()
         {
             Yestext.colorGradientPreset = onGrad;
             Notext.colorGradientPreset = offGrad;
-            Yes = true;
-        }
-        else
-        {
-            Yestext.colorGradientPreset = offGrad;
-            Notext.colorGradientPreset = onGrad;
-            Yes = false;
-        }
-    }
 
+            YesButton.onClick.AddListener(delegate { print(" clicked"); });
+            SelectionParent.SetActive(false);
+            //NoButton.onClick.AddListener(() => Time.timeScale = 1);
+
+        }
+
+
+
+        //receives an action to execute when yes is pressed
+        public void OpenUI(UnityAction ActionOnActivate, ActionType type)
+        {
+            YesButton.onClick.RemoveAllListeners();
+            ActionOnActivate += () =>  SelectionParent.SetActive(false); 
+            Gmanager.instance.GamePaused = true;
+            Time.timeScale = 0;
+            eventsys.SetSelectedGameObject(firstselected);
+            YesButton.onClick.AddListener(ActionOnActivate);
+            SelectionParent.SetActive(true);
+            switch (type)
+            {
+                case ActionType.item:
+                    Description.text = "Pick up item?";
+                    break;
+                case ActionType.button:
+                    Description.text = "press button?";
+                    break;
+                case ActionType.ledge:
+                    Description.text = "get on ledge?";
+
+                    break;
+                default:
+                    break;
+            }
+           
+
+        }
+
+
+
+    }
 
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Animations;
 
 namespace topdown
@@ -21,8 +19,9 @@ namespace topdown
         {
 
             m_MonoBehaviour.targetplayer();
+            //m_MonoBehaviour.OrientToPlayer();
 
-            if (m_MonoBehaviour.AtDistance(distancetoTrigger))
+            if (m_MonoBehaviour.OnlyDistance() <= distancetoTrigger)
             {
                 animator.SetTrigger("charge");
                 m_MonoBehaviour.charge();

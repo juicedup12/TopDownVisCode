@@ -1,6 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+
+
 
 public class Room
 {
@@ -23,6 +24,7 @@ public class Room
     int gridsizey;
     public GameObject VerticalWall;
     public GameObject HorizontalWall;
+    public GameObject InstancedVertWall;
     public GameObject Parent;
 
     public int closingwall;
@@ -34,6 +36,7 @@ public class Room
     public int secondwall;
     public int thirdwall;
     string InnerWallLayer;
+    public GameObject roombase;
 
     public Room(int gridsizex, int gridsizey, Roomtile[,] grid, List<Room> rooms, List<Roomtile> entrancepoints, GameObject vertwall, GameObject horiwall, GameObject parent, string InnerWallLayer)
     {
@@ -48,10 +51,10 @@ public class Room
         this.InnerWallLayer = InnerWallLayer;
     }
 
-    //creates a game object holding asstes that make up an inner room for RoomGen
+    //creates a game object holding asstes that make up a small room for RoomGen
     public GameObject Makesegments()
     {
-        GameObject roombase = new GameObject("room base");
+        roombase = new GameObject("room base");
         roombase.transform.parent = Parent.transform;
         float startcheck = Random.value;
         //start on the bottom or top of room?
@@ -77,8 +80,8 @@ public class Room
         }
         //Debug.Log("start wall is" + startwall);
         roombase.transform.position =  startwall;
-        GameObject vertwall = GameObject.Instantiate(VerticalWall);
-        vertwall.transform.SetParent(roombase.transform);
+        InstancedVertWall = GameObject.Instantiate(VerticalWall);
+        InstancedVertWall.transform.SetParent(roombase.transform);
 
 
         startx = randomnode;
@@ -107,8 +110,8 @@ public class Room
 
 
 
-        vertwall.GetComponent<wall>().setwallpos(startwall, corner, firstwall);
-        vertwall.AddComponent<BoxCollider2D>();
+        InstancedVertWall.GetComponent<wall>().setwallpos(startwall, corner, firstwall);
+        InstancedVertWall.AddComponent<BoxCollider2D>();
         //wall3 = new GameObject("last point");
         thirdwall = closingwall;
         //wall3.transform.position = lastwall;
@@ -117,15 +120,20 @@ public class Room
         //Debug.Log("corner is " + corner);
         wallDoor HoriwallDoorRef = horiwall.GetComponent<wallDoor>();
         HoriwallDoorRef.SetHorizontalWall(corner, lastwall, enclosingleft);
+        wall vertwallref = InstancedVertWall.GetComponent<wall>();
+        //if the wall is on the bottom
         if(firstwall == 0)
         {
             HoriwallDoorRef.SetInnerWallLayer(InnerWallLayer);
+            vertwallref.LowerWall = true;
         }
         horiwall.transform.SetParent(roombase.transform);
         //endwall = new Vector2(randomnode, gridworldsize.y);
         return roombase;
     }
 
+
+    //choses where the vertical wall will end
     int CreateCornerPoint(int randomnode, int wallendpercent)
     {
         //random point on y axis
@@ -194,7 +202,8 @@ public class Room
         }
     }
 
-    //changes local bool indicating which direction the room closes
+    //changes local bool indicating which direction the room's horizontal wall goes
+    //should change to return an enum maybe
     void CloseWall()
     {
         bool RoomOnAxis = false;
@@ -210,7 +219,7 @@ public class Room
             }
         }
 
-        //chose a random x axis for first wall
+        //choose random direction when no other wall on left or right
         if(!RoomOnAxis)
         {
             float lastcheck = Random.value;
@@ -249,7 +258,7 @@ public class Room
         //not programmed yet
     }
 
-    //
+    //checks if there's already 2 small rooms on the same side
     void SwitchFirstWall()
     {
         int RoomsOnAxis = 0;
@@ -297,6 +306,8 @@ public class Room
         return Random.Range(wallrangestart, wallrangeend);
     }
 
+
+    //change to take an enum
     //checks to see if specified axis has 2 rooms on it
     //returns true if space is available
     //axis is either 0 or gridsizey-1

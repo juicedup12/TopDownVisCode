@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Parralax : MonoBehaviour
 {
     public Vector2 ParallaxEffectMultiplier;
+    [HideInInspector]
     public Vector2 OriginalParMultiplier;
     public Transform followtransform;
     Vector3 lastcampos;
@@ -18,7 +17,7 @@ public class Parralax : MonoBehaviour
     void Start()
     {
         OriginalParMultiplier = ParallaxEffectMultiplier;
-        //followtransform = Camera.main.transform;
+        followtransform = Camera.main.transform;
         lastcampos = followtransform.position;
         Sprite sprite = GetComponent<SpriteRenderer>().sprite;
         Texture2D texture = sprite.texture;
@@ -38,24 +37,26 @@ public class Parralax : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        Vector2 deltamovement = followtransform.position - lastcampos;
-        //transform.position += new Vector3(deltamovement.x * ParallaxEffectMultiplier.x, deltamovement.y * ParallaxEffectMultiplier.y);
-        ////transform.Translate(deltamovement * ParallaxEffectMultiplier);
-      
-        float x = RoundToMultiple(ParallaxEffectMultiplier.x * deltamovement .x);
-        float y = RoundToMultiple(ParallaxEffectMultiplier.y * deltamovement.y);
-        transform.Translate(new Vector3(x , y));
-        
-        
-        lastcampos = followtransform.position;
-
-        if (Mathf.Abs(followtransform.position.x - transform.position.x) >= (textureUnitSizeX * transform.localScale.x ))
+        if (followtransform != null)
         {
-            float offsetPosx = (followtransform.position.x - transform.position.x)  % textureUnitSizeX ;
-            transform.position = new Vector3(followtransform.position.x + offsetPosx, transform.position.y);
+            Vector2 deltamovement = followtransform.position - lastcampos;
+            //transform.position += new Vector3(deltamovement.x * ParallaxEffectMultiplier.x, deltamovement.y * ParallaxEffectMultiplier.y);
+            ////transform.Translate(deltamovement * ParallaxEffectMultiplier);
+
+            float x = RoundToMultiple(ParallaxEffectMultiplier.x * deltamovement.x);
+            float y = RoundToMultiple(ParallaxEffectMultiplier.y * deltamovement.y);
+            transform.Translate(new Vector3(x, y));
+
+
+            lastcampos = followtransform.position;
+
+            if (Mathf.Abs(followtransform.position.x - transform.position.x) >= (textureUnitSizeX * transform.localScale.x))
+            {
+                float offsetPosx = (followtransform.position.x - transform.position.x) % textureUnitSizeX;
+                transform.position = new Vector3(followtransform.position.x + offsetPosx, transform.position.y);
+            }
+
         }
-
-
     }
 
 
@@ -63,6 +64,7 @@ public class Parralax : MonoBehaviour
     {
         followtransform = Followobj.transform;
         lastcampos = Followobj.transform.position;
+        Debug.Log("follow transform is " + followtransform);
     }
     
 }

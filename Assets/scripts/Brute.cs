@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 
-namespace topdown {
+namespace topdown
+{
     public class Brute : Enemy
     {
         Vector3 playerpos;
@@ -43,7 +42,8 @@ namespace topdown {
             }
             if(mState == state.charging)
             {
-                attack();
+                //during charging state the animation will be the enemy swinging a chainsaw back and forth
+                //attack();
                 atkactive = true;
                 StopAllCoroutines();
                 float step = dashspeed * Time.deltaTime;
@@ -90,8 +90,6 @@ namespace topdown {
             {
                 playerpos = playertransform.position + (transform.right * .1f);
                 mState = state.charging;
-
-
             }
 
         }
@@ -124,14 +122,31 @@ namespace topdown {
         }
 
 
-        public override void OnDrawGizmos()
+        //public override void OnDrawGizmos()
+        //{
+        //    base.OnDrawGizmos();
+        //    if (atkactive)
+        //    {
+        //        Gizmos.color = Color.black;
+        //        Gizmos.DrawCube(attackLocation.position, Vector3.one / attackRange);
+
+        //    }
+        //}
+
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            base.OnDrawGizmos();
-            if (atkactive)
+
+            if (collision.tag == "Hurtbox" && collision.transform.parent.tag == "Player")
             {
-                Gizmos.color = Color.black;
-                Gizmos.DrawCube(attackLocation.position, Vector3.one / attackRange);
-                
+
+                if (collision.IsTouchingLayers(LayerMask.GetMask("EnemyHitbox")))
+                {
+
+                    print("rusher attack collided with " + collision.name);
+
+                    Debug.Log("doing damage to player", gameObject);
+                    player.TakeDamage(transform.position);
+                }
             }
         }
 

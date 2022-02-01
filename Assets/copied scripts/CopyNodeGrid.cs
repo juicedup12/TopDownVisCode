@@ -125,6 +125,7 @@ public class CopyNodeGrid : MonoBehaviour
 
     void OnDrawGizmos()
     {
+        Gizmos.color = Color.blue;
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, gridWorldSize.y,1));
         if (grid != null && displayGridGizmos)
         {

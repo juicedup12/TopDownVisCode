@@ -1,10 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-namespace topdown {
+namespace topdown
+{
     public class UIMinimapGird : MonoBehaviour
     {
         float displacement = 30;
@@ -18,15 +18,7 @@ namespace topdown {
         List<Vector3> Positions = new List<Vector3>();
         RectTransform ParentRect;
 
-        private void OnEnable()
-        {
-            RoomGen.OnDoor += AddTile;
-        }
-
-        private void OnDisable()
-        {
-            RoomGen.OnDoor -= AddTile;
-        }
+     
 
         // Start is called before the first frame update
         void Start()
@@ -46,7 +38,7 @@ namespace topdown {
         }
 
 
-        void AddTile(Vector2 position, Vector2 dir)
+        public void AddTile(Vector2 position, Vector2 dir)
         {
             Vector2 ParentAnchoredpos = ParentRect.anchoredPosition;
             //print("parent anchor pos is " + ParentAnchoredpos);
@@ -63,7 +55,7 @@ namespace topdown {
                 return;
             }
 
-            RectTransform tile = Instantiate(TilePrefab).GetComponent<RectTransform>();
+            RectTransform tile = Instantiate(StartingTile).GetComponent<RectTransform>();
             tile.transform.SetParent(transform);
         
             tile.anchorMax = anchorMax;

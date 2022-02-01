@@ -26,6 +26,8 @@ SOFTWARE.
 
 using UnityEngine;
 
+using UnityEngine.SceneManagement;
+
 namespace Yarn.Unity.Example {
     /// attached to the non-player characters, and stores the name of the Yarn
     /// node that should be run when you talk to them.
@@ -35,6 +37,7 @@ namespace Yarn.Unity.Example {
         public string characterName = "";
 
         public string talkToNode = "";
+        public Scene scenetoload;
 
         [Header("Optional")]
         public YarnProgram scriptToLoad;
@@ -45,6 +48,15 @@ namespace Yarn.Unity.Example {
                 dialogueRunner.Add(scriptToLoad);                
             }
         }
+
+
+        [YarnCommand("startScene")]
+        public void loadscene()
+        {
+            SceneManager.LoadScene(2);
+        }
+
+
     }
 
 }

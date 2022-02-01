@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb0037cc1b0d2e40b902ad9d5763a45, type: 3}
+  m_Name: RoomDataTesting
+  m_EditorClassIdentifier: 
+  FloorTile: {fileID: 396924107246379501, guid: 2b22636f2f31e4e4a8e3b28b66a4d567,
+    type: 3}
+  Carpet: {fileID: 6516659385318690786, guid: 8d6ab6a3c97381f45a74beb20503c36b, type: 3}
+  InsideOfRoomSortLyaer: InnerWall
+  RotEase: 13
+  RotEaseHorizontal: 28
+  tileEase: 27
+  enemyScaleEase: 18
+  enemyLowerEase: 1
+  enemyHopEase: 16
+  HallwayLight: {fileID: 1588647003378740214, guid: b9e2a2f8d9e89c546b0c05be4fa83485,
+    type: 3}
+  ItemsToSpawn:
+  - {fileID: 841764019275767955, guid: 1b765b97176d6f84592ce1f56f282a9d, type: 3}
+  enemies:
+  - {fileID: 3789863192541420301, guid: a7353ecd0f44f7f41be647f62de3e9d4, type: 3}

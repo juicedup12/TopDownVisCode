@@ -1,0 +1,52 @@
+{
+    "name": "New Controls",
+    "maps": [
+        {
+            "name": "New action map",
+            "id": "4442e2e1-39e4-49f7-9294-ba170a9ec1e4",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "84f476da-a43c-49eb-bf7a-d12708e59f85",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "New action1",
+                    "type": "Value",
+                    "id": "6cf0c0a2-4038-4180-9a30-c72911a1e408",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7dd5493f-67c2-4046-a5c4-4133884dee1a",
+                    "path": "*/{Back}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3070983d-121f-4147-ae21-318fb5bd348b",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

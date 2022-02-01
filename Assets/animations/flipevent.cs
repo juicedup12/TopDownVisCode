@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace topdown {
+namespace topdown
+{
     public class flipevent : MonoBehaviour
     {
         public Transform attackLocation;
@@ -55,7 +55,7 @@ namespace topdown {
 
                         Debug.Log("hit " + damage.name);
 
-                        damage.GetComponent<Enemy>().die();
+                        damage.GetComponent<Enemy>().Die();
                         
                     }
 

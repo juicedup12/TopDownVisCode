@@ -1,14 +1,13 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using CodeMonkey;
 
 namespace topdown
 {
-    public class Enemy : MonoBehaviour
+    //change to IUseItem later
+    public class Enemy : MonoBehaviour, IUseItem, Ikillable
     {
-        public Transform GunTransofrm;
+        public Transform WeaponTransform;
         public LayerMask wallcheck;
         public delegate void death(Transform enemy);
         public event death OnDeath;
@@ -22,29 +21,36 @@ namespace topdown
         public float timer = .1f;
         public float viewFov;
         public float viewDistance;
-        Vector3 dir;
+        protected Vector3 dir;
         public bool chasingplayer;
         public LayerMask playermask;
         public GameObject torso;
+        public GameObject BloodParticle;
         Vector2 gridpos;
         public GameObject BloodEffect;
+        public Material glowmaterial;
 
         public Vector2[] Patrolpoints;
         public Animator anim;
         public Transform playertransform;
+        public player player;
         public Transform feet;
         public float damping = 1.2f;
         public Vector3 addAngle;
         public bool pathcreated = false;
         public Vector3 OrientTo;
         [HideInInspector]
-        public  bool CantMove;
+        public bool CantMove;
         public int AtWaypoint = 0;
         public int AtTarget = 1;
         public Transform spawnpoint;
         float Pathfindwait = .2f;
-
+        public GameObject coin;
+        SpriteRenderer sprrend;
         public Vector3 targetlastpos;
+        bool Reenabled = false;
+        protected bool dead = false;
+        public bool IsDead { get { return dead; } }
 
 
         protected virtual void Awake()
@@ -52,7 +58,7 @@ namespace topdown
             anim = GetComponent<Animator>();
             playertransform = GameObject.Find("Player ").transform;
         }
-
+        
 
         protected virtual void Start()
         {
@@ -60,6 +66,7 @@ namespace topdown
             offsetSavedValue = offset;
             StartCoroutine(setgridpos());
             requestManager = GetComponentInParent<CopyRequestManager>();
+            sprrend = GetComponent<SpriteRenderer>();
         }
 
         protected virtual void Update()
@@ -67,10 +74,12 @@ namespace topdown
 
             if (!CantMove)
             {
-                if (Input.GetKeyDown(KeyCode.Mouse1))
-                {
-                    Debug.Log("distance is " + Vector3.Distance(transform.position, playertransform.position));
-                }
+                //if (Input.GetKeyDown(KeyCode.Mouse1))
+                //{
+                //    Debug.Log("distance is " + Vector3.Distance(transform.position, playertransform.position));
+                //}
+
+
 
                 if (timer > 0)
                 {
@@ -83,12 +92,6 @@ namespace topdown
                     //Debug.Log("timer done");
                     if (target != null && targetlastpos != target)
                     {
-                        //if(!checkBetween() && offset != offsetSavedValue)
-                        //{
-                        //    CMDebug.TextPopup("reseting offset", Vector3.zero);
-                        //    offset = offsetSavedValue;
-                        //}
-
                         if (requestManager != null)
                         {
                             requestManager.RequestPath((Vector2)transform.position - gridpos,(Vector2)target - gridpos, OnPathFound, offset);
@@ -101,6 +104,20 @@ namespace topdown
                         }
 
                     }
+
+                    //flip sprite if dot product is behind flip sprite
+                    
+                    //Vector3 forward = transform.TransformDirection(Vector3.right);
+                    Vector3 toOther = target - transform.position;
+                    float TargetDot = Vector3.Dot(transform.right * Mathf.Sign(transform.localScale.x), toOther.normalized);
+                    if (TargetDot < 0)
+                    {
+                        //print("The other transform is behind me!");
+                        transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, 1);
+                        WeaponTransform.localScale = WeaponTransform.localScale * -1; 
+                    }
+                    
+                    //print("enemy dot product to dir is " + Vector3.Dot(transform.right, toOther.normalized));
                 }
                 facetarget();
             }
@@ -109,22 +126,56 @@ namespace topdown
         private void OnEnable()
         {
             SceneLinkedSMB<Enemy>.Initialise(anim, this);
+
+            if (Reenabled)
+                StartCoroutine("FollowPath");
+            Reenabled = false;
+        }
+
+        private void OnDisable()
+        {
+            StopCoroutine("FollowPath");
+            Reenabled = true;
+            chasingplayer = false;
         }
 
 
-
-
-        public void die()
+        public void UsePotion(int amount)
         {
-            anim.SetTrigger("die");
-            Instantiate(BloodEffect, transform.position, Quaternion.identity);
-            if(Combo.instance != null)
+            Debug.Log("used potion on " + gameObject.name, gameObject);
+        }
+
+
+        public void UsePoison(int dmg)
+        {
+
+        }
+
+        public virtual void Die()
+        {
+            if (!dead)
             {
-                Combo.instance.AddToCombo();
+                HitStop.instance.TimeStop();
+                anim.SetTrigger("die");
+                print("enemy was killed");
+                WeaponTransform.gameObject.SetActive(false);
+                DropMoney();
+                Instantiate(BloodEffect, transform.position, Quaternion.identity);
+                if (Combo.instance != null)
+                {
+                    Combo.instance.ComboStart();
+                }
+                CantMove = true;
+
+                OnDeath?.Invoke(transform);
+                StopAllCoroutines();
+                //asign blood glow material
+                sprrend.material = glowmaterial;
+
+                //Destroy(gameObject);
+                dead = true;
+                Instantiate(BloodParticle, transform.position, Quaternion.identity);
             }
-            CantMove = true;
-            OnDeath?.Invoke(transform);
-            StopAllCoroutines();
         }
 
         public void dieSlice()
@@ -135,6 +186,13 @@ namespace topdown
             Instantiate(torso, transform.position, Quaternion.identity);
             StopAllCoroutines();
         }
+
+        public void DropMoney()
+        {
+            Instantiate(coin, transform.position, Quaternion.identity);
+            //Gmanager.instance.MoneyToPlayer();
+        }
+
 
         //sets player as the target and orientation
         public void targetplayer()
@@ -148,14 +206,22 @@ namespace topdown
 
         public void searchforPlayer()
         {
-            if (!Gmanager.instance.LevelStarted) return;
-            if (playertransform == null)
+            if (!Gmanager.instance.LevelStarted)
+            {
+                //print("level not started");
                 return;
+            }
+
+            if (playertransform == null)
+            {
+                print("player not found");
+                return;
+            }
             dir = playertransform.position - transform.position;
             //if player is too far from enemy return
             if (dir.sqrMagnitude < viewDistance * viewDistance)
             {
-                float angle = Vector3.Angle(GunTransofrm.right, dir);
+                float angle = Vector3.Angle(WeaponTransform.right, dir);
 
                 if (angle < viewFov * 0.5f && !chasingplayer)
                 {
@@ -171,10 +237,10 @@ namespace topdown
                             timer = 0;
                             target = playertransform.position;
                     }
-                    else
-                    {
-                        Debug.Log(hit.transform.name + "between player and enemy");
-                    }
+                    //else
+                    //{
+                    //    Debug.Log(hit.transform.name + "between player and enemy");
+                    //}
                 }
             }
         }
@@ -295,11 +361,13 @@ namespace topdown
 
         public void facetarget()
         {
-            Vector3 dir = OrientTo - GunTransofrm.position;
+            Vector3 dir = (OrientTo + Vector3.up * .3f) - WeaponTransform.position;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-            GunTransofrm.rotation = Quaternion.Slerp(GunTransofrm.rotation, q, damping);
+            WeaponTransform.rotation = Quaternion.Slerp(WeaponTransform.rotation, q, damping);
             //feet.transform.rotation = Quaternion.AngleAxis(angle, feet.transform.forward);
+
+
 
         }
 
@@ -307,12 +375,12 @@ namespace topdown
         {
             if (playertransform == null)
                 return false;
-            Vector3 dir = playertransform.position - transform.position;
-            float dot = Vector3.Dot(GunTransofrm.right, dir);
+            Vector3 dir =   playertransform.position - WeaponTransform.position;
+            float dot = Vector3.Dot(WeaponTransform.right, dir);
 
-            if (dot > .5)
+            if (dot > .7)
             {
-                print("dot is greater than .5");
+                //print("dot is greater than .5");
                 return true;
             }
 
@@ -457,10 +525,13 @@ namespace topdown
 
         public bool nearTarget()
         {
-            float dist = Vector3.Distance(path[path.Length -1], transform.position);
-            if (dist < .2)
+            if (path.Length > 1)
             {
-                return true;
+                float dist = Vector3.Distance(path[path.Length - 1], transform.position);
+                if (dist < .2)
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -470,10 +541,10 @@ namespace topdown
         private void OnDrawGizmosSelected()
         {
             //draw the cone of view
-            Vector3 forward = GunTransofrm.right;
+            Vector3 forward = WeaponTransform.right;
 
 
-            Vector3 endpoint = GunTransofrm.position + (Quaternion.Euler(0, 0, viewFov * 0.5f) * forward);
+            Vector3 endpoint = WeaponTransform.position + (Quaternion.Euler(0, 0, viewFov * 0.5f) * forward);
 
             Handles.color = new Color(0, 1.0f, 0, 0.2f);
             Handles.DrawSolidArc(transform.position, -Vector3.forward, (endpoint - transform.position).normalized, viewFov, viewDistance);
@@ -483,6 +554,12 @@ namespace topdown
             //Handles.DrawSolidDisc(transform.position, Vector3.back, meleeRange);
         }
 #endif
+    }
+
+
+    public interface Ikillable
+    {
+        void Die();
     }
 }
 

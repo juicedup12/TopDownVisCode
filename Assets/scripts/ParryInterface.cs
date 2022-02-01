@@ -1,0 +1,7 @@
+﻿interface IparryInterface
+    {
+    void Stunned();
+
+
+    }
+

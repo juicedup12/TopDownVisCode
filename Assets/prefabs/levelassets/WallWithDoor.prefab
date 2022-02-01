@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 4942262865697602911}
   m_Layer: 9
   m_Name: SquarePivotRight (1)
-  m_TagString: Untagged
+  m_TagString: wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -127,8 +127,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 586922781
-  m_SortingLayer: 3
+  m_SortingLayerID: -368230027
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 22102a1be1c415f4f8937e534c829196, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -139,7 +139,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 1
 --- !u!114 &5452655736113404296
 MonoBehaviour:
@@ -166,7 +166,7 @@ MonoBehaviour:
   - {x: -0.809626, y: 0.036643784, z: 0}
   m_ShapePathHash: 1242871998
   m_Mesh: {fileID: 0}
-  m_InstanceId: 43230
+  m_InstanceId: 103922
 --- !u!61 &4942262865697602911
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 6767252391440971294}
   m_Layer: 9
   m_Name: SquarePivotRight
-  m_TagString: Untagged
+  m_TagString: wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -264,7 +264,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 586922781
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 22102a1be1c415f4f8937e534c829196, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -275,7 +275,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 1
 --- !u!61 &1003543094428310557
 BoxCollider2D:
@@ -328,7 +328,7 @@ MonoBehaviour:
   - {x: -0.8103315, y: 0.048157312, z: 0}
   m_ShapePathHash: -966583432
   m_Mesh: {fileID: 0}
-  m_InstanceId: 43234
+  m_InstanceId: 103926
 --- !u!1 &3989061875928522951
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,7 +343,7 @@ GameObject:
   - component: {fileID: 1633495008109812442}
   m_Layer: 9
   m_Name: WallWithDoor
-  m_TagString: Untagged
+  m_TagString: wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

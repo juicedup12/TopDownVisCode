@@ -1,0 +1,5 @@
+﻿interface IRoomTransitioner
+{
+    void DoRoomTransition();
+}
+

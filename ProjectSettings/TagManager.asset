@@ -8,6 +8,11 @@ TagManager:
   - bullet
   - wall
   - ledge
+  - Wall
+  - Hurtbox
+  - ThrownItem
+  - shop
+  - mesh
   layers:
   - Default
   - TransparentFX
@@ -22,12 +27,12 @@ TagManager:
   - rope
   - Enemy
   - HitboxLayer
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - HurtBox
+  - ThrownItem
+  - EnemyHitbox
+  - CarpetLayer
+  - Entrance
+  - Interactable
   - 
   - 
   - 
@@ -45,9 +50,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: player
-    uniqueID: 429888773
-    locked: 0
   - name: Floor
     uniqueID: 29885349
     locked: 0
@@ -60,6 +62,12 @@ TagManager:
   - name: InnerWall
     uniqueID: 3926737269
     locked: 0
+  - name: player
+    uniqueID: 429888773
+    locked: 0
   - name: OuterWall
     uniqueID: 1102234203
+    locked: 0
+  - name: UI
+    uniqueID: 226589487
     locked: 0

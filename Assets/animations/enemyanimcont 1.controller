@@ -14,9 +14,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
+  m_TransitionDuration: 0.65
   m_TransitionOffset: 0
-  m_ExitTime: 0.34782612
+  m_ExitTime: 0
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -109,6 +109,32 @@ AnimatorState:
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
   m_Motion: {fileID: 0}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!1102 &-4332910567454066263
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Death
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: a7bc97fc139d4dd4aa165b8d9f0dbcfd, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -439,13 +465,16 @@ AnimatorStateMachine:
     m_Position: {x: 770, y: 410, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3789301879476775931}
-    m_Position: {x: 120, y: 540, z: 0}
+    m_Position: {x: 0, y: 560, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5291896045193441610}
     m_Position: {x: 330, y: 30, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5314663060436505808}
     m_Position: {x: 370, y: 400, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -4332910567454066263}
+    m_Position: {x: 405, y: 465, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 3465859677361603564}
@@ -478,7 +507,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: e4aa958c4c4f83e48a9b5b036adcb930, type: 2}
+  m_Motion: {fileID: 7400000, guid: a7bc97fc139d4dd4aa165b8d9f0dbcfd, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -496,6 +525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cc86b6ea7651f5499d85d11b73defd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  distToshoot: 4
 --- !u!1102 &8284969302664804696
 AnimatorState:
   serializedVersion: 5

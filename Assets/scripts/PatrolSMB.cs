@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace topdown
 {
@@ -24,7 +22,7 @@ namespace topdown
             //if there's only one patrol point stay 
             if (m_MonoBehaviour.Patrolpoints.Length < 1)
             {
-                Debug.Log("less than 2 waypoints");
+                //Debug.Log("less than 2 waypoints");
                 return;
             }
             m_MonoBehaviour.patrolupdate();
