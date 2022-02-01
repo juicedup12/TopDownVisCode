@@ -126,7 +126,7 @@ namespace topdown{
         public GameObject hurtboxobj;
         public BoxCollider2D Hurtbox;
         BoxCollider2D HitBox;
-        public DialogueUI uidialogue;
+        //public DialogueUI uidialogue;
         
         Rigidbody2D rb2d;
         public LayerMask enemies;
@@ -365,13 +365,13 @@ namespace topdown{
 
             if(InDialogue)
             {
-                uidialogue.MarkLineComplete();
+                //uidialogue.MarkLineComplete();
             }
             print("current device pressed from accept is " + context.control.device.displayName);
             
             if(DialoguePlayer != null && !InDialogue)
             {
-                DialoguePlayer.CheckForNearbyNPC();
+                //DialoguePlayer.CheckForNearbyNPC();
             }
 
         }
@@ -1354,7 +1354,7 @@ namespace topdown{
             if
             (PlayerInteractableTarget != null)
             {
-                InteractUIBehavior.instance.DisplayUI(() => print("on item"), transform.position, "To inspect");
+                InteractUIBehavior.instance.DisplayUI(() => print("on item"), PlayerInteractableTarget.transform.position, "To inspect");
             }
         }
 

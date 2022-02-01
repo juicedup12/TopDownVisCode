@@ -40,7 +40,7 @@ namespace Yarn.Unity.Example
         [HideInInspector]
         public topdown.player playerclass;
         public float interactionRadius = 2.0f;
-        DialogueRunner dialogue;
+        //DialogueRunner dialogue;
         public float movementFromButtons {get;set;}
 
         /// Draw the range at which we'll start talking to people.
@@ -56,25 +56,25 @@ namespace Yarn.Unity.Example
 
         private void Start()
         {
-            dialogue = FindObjectOfType<DialogueRunner>();
+            //dialogue = FindObjectOfType<DialogueRunner>();
             playerclass = GetComponent<player>();
         }
 
         /// Update is called once per frame
         void Update () {
 
-            //Remove all player control when we're in dialogue
-            if(dialogue != null)
-            if (dialogue.IsDialogueRunning == true)
-            {
-                playerclass.canmove = false ;
-                playerclass.InDialogue = true;
-                return;
-            }
-            else if(playerclass.InDialogue)
-            { playerclass.canmove = true;
-                playerclass.InDialogue = false;
-            }
+            // //Remove all player control when we're in dialogue
+            // if(dialogue != null)
+            // if (dialogue.IsDialogueRunning == true)
+            // {
+            //     playerclass.canmove = false ;
+            //     playerclass.InDialogue = true;
+            //     return;
+            // }
+            // else if(playerclass.InDialogue)
+            // { playerclass.canmove = true;
+            //     playerclass.InDialogue = false;
+            // }
 
 
            
@@ -82,7 +82,7 @@ namespace Yarn.Unity.Example
             // Detect if we want to start a conversation
             if (accept )
             {
-                CheckForNearbyNPC();
+                //CheckForNearbyNPC();
             }
         }
 
@@ -90,19 +90,19 @@ namespace Yarn.Unity.Example
         /** Filter them to those that have a Yarn start node and are in range; 
          * then start a conversation with the first one
          */
-        public void CheckForNearbyNPC ()
-        {
-            var allParticipants = new List<NPC> (FindObjectsOfType<NPC> ());
-            var target = allParticipants.Find (delegate (NPC p) {
-                return string.IsNullOrEmpty (p.talkToNode) == false && // has a conversation node?
-                (p.transform.position - this.transform.position)// is in range?
-                .magnitude <= interactionRadius;
-            });
-            if (target != null) {
-                // Kick off the dialogue at this node.
-                FindObjectOfType<DialogueRunner> ().StartDialogue (target.talkToNode);
-                playerclass.move = Vector3.zero;
-            }
-        }
+        // public void CheckForNearbyNPC ()
+        // {
+        //     var allParticipants = new List<PlayerCharacter> (FindObjectsOfType<PlayerCharacter> ());
+        //     var target = allParticipants.Find (delegate (PlayerCharacter p) {
+        //         return string.IsNullOrEmpty (p.talkToNode) == false && // has a conversation node?
+        //         (p.transform.position - this.transform.position)// is in range?
+        //         .magnitude <= interactionRadius;
+        //     });
+        //     if (target != null) {
+        //         // Kick off the dialogue at this node.
+        //         FindObjectOfType<DialogueRunner> ().StartDialogue (target.talkToNode);
+        //         playerclass.move = Vector3.zero;
+        //     }
+        // }
     }
 }

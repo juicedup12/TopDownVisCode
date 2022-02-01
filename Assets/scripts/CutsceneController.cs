@@ -14,14 +14,14 @@ public class CutsceneController : MonoBehaviour
     }
     public NamedImage[] pictures;
     public Image DisplayingImage;
-    public DialogueRunner dialogueRunner;
-    public YarnProgram tutnode;
+    //public DialogueRunner dialogueRunner;
+    //public YarnProgram tutnode;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        dialogueRunner.Add(tutnode);
+        //dialogueRunner.Add(tutnode);
         //dialogueRunner.StartDialogue("TestYarnStart");
     }
 
