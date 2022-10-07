@@ -1,0 +1,19 @@
+﻿title: Start
+---
+come talk to me
+Do you want to Start the tutorial?
+->yes
+    break dummies
+    <<invoke>>
+    <<jump TutStart>>
+->no
+    more dialogue
+
+go
+===
+title: TutStart
+---
+press left mouse to attack
+One left
+Wow you can think!
+===

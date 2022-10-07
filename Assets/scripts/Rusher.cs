@@ -135,7 +135,8 @@ namespace topdown
             IsStunned = true;
         }
 
-        public override void Die()
+
+        public override void Die(Vector2 hitpos)
         {
 
             if (IsStunned && !dead)
@@ -143,7 +144,7 @@ namespace topdown
                 print("enemy was attacked while stunned");
                 Gmanager.instance.OnParry();
             }
-            base.Die();
+            base.Die(hitpos);
         }
 
         public void charge()

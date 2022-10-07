@@ -13,6 +13,7 @@ TagManager:
   - ThrownItem
   - shop
   - mesh
+  - Hitbox
   layers:
   - Default
   - TransparentFX
@@ -33,8 +34,8 @@ TagManager:
   - CarpetLayer
   - Entrance
   - Interactable
-  - 
-  - 
+  - PlayerHitbox
+  - SlicableMesh
   - 
   - 
   - 

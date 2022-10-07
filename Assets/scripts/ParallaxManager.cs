@@ -1,55 +1,59 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.Universal;
+using DG.Tweening;
 
 public class ParallaxManager : MonoBehaviour
 {
 
     public Parralax[] parralaxObjs;
     Vector2 parralaxeffectMultiplier;
-    public PixelPerfectCamera pixelcam;
-    public float StartingPPU, FinalPPU;
 
-    public void FollowPlayerCam(GameObject cam)
+    public AnimationCurve curve;
+    public float RotationAmount;
+    public float timeToComplete;
+    float rotation = 0;
+
+    public Ease ease;
+
+    private void Start()
     {
-        StartCoroutine(LerpPixelDensity(StartingPPU, FinalPPU));
-        foreach (Parralax parobj in parralaxObjs)
-        {
-            parobj.AssignFollow(cam);
-            parobj.ParallaxEffectMultiplier *= .2f;
-        }
+        //StartCoroutine(RotateCoroutine());
     }
 
 
-
-
-    public void FollowRoomFocusCam(GameObject cam)
+    IEnumerator RotateCoroutine()
     {
-        pixelcam.assetsPPU =  Mathf.RoundToInt( StartingPPU);
-        print("parallax objs folloowing room focus cam");
-        foreach (Parralax parobj in parralaxObjs)
+        yield return new WaitForSeconds(1);
+        float i = 0;
+        float rate =  1/timeToComplete;
+        float rotation = 0;
+        while (i < 1)
         {
-            parobj.AssignFollow(cam);
-            parobj.ParallaxEffectMultiplier = parobj.OriginalParMultiplier;
-        }
-    }
-
-    IEnumerator LerpPixelDensity(float currentppu, float targetppu)
-    {
-        print("started pixel lerping");
-        float currentdensity = currentppu;
-        while (Mathf.Ceil( currentdensity + .05f) < targetppu  )
-        {
-            print("current ppu is " + currentdensity);
-            currentdensity = Mathf.Lerp(currentdensity, targetppu, .1f);
-            pixelcam.assetsPPU = (int)Mathf.Ceil(currentdensity);
+            i += rate * Time.deltaTime;
+            rotation = Mathf.Lerp(0, RotationAmount, curve.Evaluate(i));
+            AssignParalaxValue(rotation);
             yield return null;
         }
-        pixelcam.assetsPPU = (int)targetppu;
         yield return null;
     }
+
+    public void TweenParalax(float rotationAmount, float duration)
+    {
+        print("starting tween");
+        Tween rotateTween = DOTween.To(() => rotation, x => rotation = x, rotation + rotationAmount, duration);
+        rotateTween.SetEase(ease);
         
-    
+        rotateTween.onUpdate = () => { AssignParalaxValue(rotation);  };
 
+    }
 
+    public void AssignParalaxValue(float f)
+    {
+        //asign rotation to parralax objects
+        foreach (Parralax parralax in parralaxObjs)
+        {
+            parralax.xValue = f;
+        }
+
+    }
 }

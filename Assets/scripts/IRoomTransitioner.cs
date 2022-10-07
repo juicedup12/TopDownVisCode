@@ -1,5 +1,8 @@
-﻿interface IRoomTransitioner
+﻿//small transition scripts
+
+public interface IRoomTransitioner
 {
-    void DoRoomTransition();
+    //inform level creator after this transition finished
+    void DoRoomTransition(iStageBuild LevelBuilder);
 }
 

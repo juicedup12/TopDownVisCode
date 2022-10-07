@@ -1,14 +1,14 @@
+using InteractableSelect;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 using Yarn.Unity.Example;
-using Yarn;
-using Yarn.Unity;
-using System;
 
 
-namespace topdown{
+namespace topdown
+{
     public class player : MonoBehaviour, IUseItem
     {
 
@@ -49,7 +49,7 @@ namespace topdown{
         public float aimfloat;
         public float AimdotSpeed;
         #endregion
-        
+
         #region vectors
         //vectors
 
@@ -108,7 +108,9 @@ namespace topdown{
         public PostProcessController postProcessCtrl;
         public GameObject HoldDashIndicator;
         public GameObject swoosh;
+        [SerializeReference] Slicer sliceObj;
         CapsuleCollider2D Capcol;
+        private ItemSelectionManager _itemSelectionManager;
         public GameObject SlashIndicator;
         PressBehavior dashpress;
         public BoxCollider2D Parrybox;
@@ -127,7 +129,7 @@ namespace topdown{
         public BoxCollider2D Hurtbox;
         BoxCollider2D HitBox;
         //public DialogueUI uidialogue;
-        
+
         Rigidbody2D rb2d;
         public LayerMask enemies;
         public GameObject TargetIndicator;
@@ -145,24 +147,26 @@ namespace topdown{
         Material AimMat;
         #endregion
 
-
+        #region Callbacks
         public event Action ParryAction;
         public event Action AttackAction;
         public event Action DashCompleteAction;
-       
-        
+        #endregion
+
         string device;
         public Vector3 descenddir;
 
         private void Awake()
         {
-            _inputActions = new Controlls();
 
+            rb2d = GetComponent<Rigidbody2D>();
+            _inputActions = new Controlls();
+            playeranim = GetComponent<Animator>();
         }
 
         private void OnEnable()
         {
-            
+
             InputSystem.onActionChange += (obj, change) =>
             {
                 if (change == InputActionChange.ActionPerformed)
@@ -186,20 +190,22 @@ namespace topdown{
                 }
             };
 
+            //need to fix this line below
             RoomGen.OnDoor += WalkInDir;
             _inputActions.Enable();
-            
+            _inputActions.UI.Disable();
+
             _inputActions.Player.Accept.started += OnAcceptButton;
-            _inputActions.Player.Accept.canceled += ctx => PressedAccept = false;
+            //_inputActions.Player.Accept.canceled += ctx => PressedAccept = false;
             _inputActions.Player.Walking.performed += onMoveInput;
-            _inputActions.Player.Walking.canceled += ctx => { moving = false; print("stopped movving") ; InputMove = Vector2.zero;   };
+            _inputActions.Player.Walking.canceled += ctx => { moving = false; print("stopped movving"); InputMove = Vector2.zero; };
             _inputActions.Player.Look.performed += onLookInput;
             _inputActions.Player.Look.canceled += ctx => InputLook = Vector2.zero;
-            _inputActions.Player.Attack.performed += ctx => { Attacking = true; };
-            _inputActions.Player.Attack.canceled += ctx => {  Attacking = false; };
-            _inputActions.Player.Dash.started += ctx => {  print("tapped dash"); Dashing = true; };
+            _inputActions.Player.Attack.performed += ctx => { if (ctx.interaction is HoldInteraction) playeranim.SetTrigger("HoldPunch"); else { playeranim.SetTrigger("ATK"); Attacking = true; } };
+            _inputActions.Player.Attack.canceled += ctx => { Attacking = false; };
+            _inputActions.Player.Dash.started += ctx => { print("tapped dash"); Dashing = true; };
             _inputActions.Player.Dash.performed += ctx => { Dashing = !ctx.performed; print("dash perforted"); DashPressDuration = (float)ctx.duration; if (ctx.interaction is PressInteraction) { }; };
-            _inputActions.Player.MouseLook.performed +=  onmouseLook;
+            _inputActions.Player.MouseLook.performed += onmouseLook;
             _inputActions.Player.OpenInventory.performed += ctx => OpenInventory = true;
             _inputActions.Player.Parry.performed += ctx => Parry = true;
             _inputActions.Player.Parry.canceled += ctx => Parry = false;
@@ -207,7 +213,8 @@ namespace topdown{
             _inputActions.Player.Pause.performed += ctx => PauseUI.instantce.ShowPauseMenu();
             _inputActions.Player.SlowMo.performed += SlowmodeInput;
             _inputActions.Player.SlowMo.canceled += ctx => { print("canceled slowmo"); postProcessCtrl.SetBlurActive(false); Time.timeScale = 1; };
-             }
+            SceneLinkedSMB<player>.Initialise(playeranim, this);
+        }
 
         private void OnDisable()
         {
@@ -239,15 +246,16 @@ namespace topdown{
         // Start is called before the first frame update
         void Start()
         {
+
             HitBox = SlashIndicator.GetComponent<BoxCollider2D>();
+            _itemSelectionManager = GetComponentInChildren<ItemSelectionManager>();
             inventory = GetComponent<PlayerInventoryController>();
             Trail = GetComponent<TrailRenderer>();
             anim = GetComponentsInChildren<Animator>();
             AimLine = GetComponent<LineRenderer>();
-            if(AimMat)
-            AimMat = AimLine.material;
-            playeranim = GetComponent<Animator>();
-            SceneLinkedSMB<player>.Initialise(playeranim, this);
+            if (AimMat)
+                AimMat = AimLine.material;
+
             SceneLinkedSMB<PlayerInventoryController>.Initialise(playeranim, inventory);
             for (int i = 0; i < anim.Length; i++)
             {
@@ -260,22 +268,21 @@ namespace topdown{
                     feet = anim[i];
                 }
             }
-            rb2d = GetComponent<Rigidbody2D>();
-            
+
             wait = Animator.StringToHash("Wait");
             Capcol = GetComponent<CapsuleCollider2D>();
-            
-            //AddMoney(10);
-            
 
-            if(healthUI != null)
+            //AddMoney(10);
+
+
+            if (healthUI != null)
             {
                 //healthUI.setCurrentHealth(PlayerHealth);
                 //healthUI.ChangePlayerHealth(PlayerHealth);
 
             }
             DialoguePlayer = GetComponent<PlayerCharacter>();
-            if(DialoguePlayer != null)
+            if (DialoguePlayer != null)
             {
                 DialoguePlayer.playerclass = this;
             }
@@ -286,19 +293,18 @@ namespace topdown{
         void Update()
         {
 
-            if(stambar != null)
-            stambar.SetFillAmount(currentstam / 100);
-                
+            if (stambar != null)
+                stambar.SetFillAmount(currentstam / 100);
+
             if (currentstam < 100 && CanRegainStamina)
             {
                 currentstam += Time.deltaTime * (stamdecrease / 2);
             }
 
-            TargetInteractableOjects();
 
         }
 
-      
+
 
         private void FixedUpdate()
         {
@@ -307,15 +313,20 @@ namespace topdown{
                 //print("fixed update, movedir is " + move);
 
                 rb2d.velocity = InputMove * speed * Time.fixedDeltaTime;
-                
+
             }
 
-            if(TransitioningToLevel && canmove)
+            if (TransitioningToLevel && canmove)
             {
                 rb2d.velocity = WalkIntoLevelDir * speed * Time.deltaTime;
             }
+
+            if (lookaheadDir.magnitude > 1.5)
+                LookAheadTransform.position = transform.position + new Vector3(Mathf.Clamp(lookaheadDir.x, -4, 4), Mathf.Clamp(lookaheadDir.y, -4, 4)) / 2f;
+            else LookAheadTransform.position = transform.position;
         }
-        
+
+
 
         public void MovementInput()
         {
@@ -332,7 +343,6 @@ namespace topdown{
                 move = Vector3.zero;
             }
 
-            MoveLookAhead();
 
             playeranim.SetFloat("DirX", rb2d.velocity.x);
             playeranim.SetFloat("DirY", rb2d.velocity.y);
@@ -359,21 +369,22 @@ namespace topdown{
         {
             var value = context.ReadValue<float>();
             //Debug.Log("pressing accept");
-            PressedAccept = (context.duration < .1) && (context.started );
+            PressedAccept = (context.duration < .1) && (context.started);
+            PressedAccept = true;
+            //inventory.ConsumeItem = true;
 
-            inventory.ConsumeItem = true;
-
-            if(InDialogue)
+            if (InDialogue)
             {
                 //uidialogue.MarkLineComplete();
             }
-            print("current device pressed from accept is " + context.control.device.displayName);
-            
-            if(DialoguePlayer != null && !InDialogue)
+            //print("current device pressed from accept is " + context.control.device.displayName);
+
+            if (DialoguePlayer != null && !InDialogue)
             {
                 //DialoguePlayer.CheckForNearbyNPC();
             }
 
+            _itemSelectionManager.InteractWithObject();
         }
 
         void onMoveInput(InputAction.CallbackContext context)
@@ -383,7 +394,7 @@ namespace topdown{
             InputMove = value.normalized;
             //print("input move is " + InputMove);
         }
-        
+
         public void AddMoney(int amount)
         {
             int currentmoney = Money;
@@ -396,9 +407,27 @@ namespace topdown{
             var value = context.ReadValue<Vector2>();
             InputLook = value;
             //Debug.Log("input look is " + value);
-            
         }
 
+
+        public void ControlSlicer()
+        {
+            if (!sliceObj) return;
+            if (!sliceObj.isActiveAndEnabled) return;
+            sliceObj.MouseInputPos = InputMousePos;
+            //print("slice mouse input is " + InputMousePos);
+            if(Attacking)
+            {
+                print("slicer attack");
+                Attacking = false;
+            }
+            if( _inputActions.Player.Attack.WasPerformedThisFrame())
+                {
+                print("attack performed this frame");
+
+                sliceObj.MouseClick();
+            }
+        }
 
         public void ActivateParry(bool activate)
         {
@@ -408,7 +437,7 @@ namespace topdown{
                 Parrybox.enabled = false;
         }
 
-        
+
 
 
         public void FinishedAction(int tutnum)
@@ -426,7 +455,7 @@ namespace topdown{
                     DashCompleteAction?.Invoke();
                     break;
             }
-            
+
         }
 
         void onmouseLook(InputAction.CallbackContext context)
@@ -444,7 +473,7 @@ namespace topdown{
                 //Vector2.Lerp(LookAheadTransform.position, InputMousePos, .5f);
                 //inventory.PointDir = val;
             }
-            else if(Mouse.current.delta.ReadValue().magnitude < 5 && OnMouseControl)
+            else if (Mouse.current.delta.ReadValue().magnitude < 5 && OnMouseControl)
             {
                 //print("stopped moving mouse");
                 StartCoroutine("MouseLookReset"); //print("stopped moving mouse");
@@ -481,40 +510,41 @@ namespace topdown{
             TakeDamage(transform.position);
         }
 
-        void ChangeHealth( int healamnt)
+        void ChangeHealth(int healamnt)
         {
 
             PlayerHealth = PlayerHealth + healamnt > MaxHealth ? MaxHealth : PlayerHealth + healamnt;
             int heal = PlayerHealth;
-            
-            print("healing player by  "  + heal);
+
+            print("healing player by  " + heal);
             healthUI.ChangePlayerHealth(heal);
         }
 
         public void handledash()
         {
-            
+
             lastpointeddir += move * dashcontrol;
-            
+
 
             checkdash();
         }
-        
+
+
         public void Dashinput()
         {
-            
+
             lastpointeddir = move;
             //isdashing = true;
             if (Time.time >= (lastdash + dashcooldown))
                 attemptTodash();
-            
+
         }
 
         public bool CanDash()
         {
-            if(Dashing && move.magnitude > .2 && canmove && currentstam > 30)
+            if (Dashing && move.magnitude > .2 && canmove && currentstam > 30)
             {
-                
+
                 return true;
             }
             return false;
@@ -551,7 +581,7 @@ namespace topdown{
                 HoldDashIndicator.SetActive(false);
 
         }
-        
+
         public bool AddToInventory(ItemClass item)
         {
             if (inventory)
@@ -571,7 +601,7 @@ namespace topdown{
 
             return false;
 
-            
+
         }
 
         public void InventoryClose(bool ThrowItem = false)
@@ -604,16 +634,16 @@ namespace topdown{
 
         void attemptTodash()
         {
-                Debug.Log("attempt to dash");
-                isdashing = true;
-                dashtimeleft = dashtime;
-                lastdash = Time.time;
-                if (afterImgPool.instance == null)
-                    return;
-                afterImgPool.instance.getfrompool();
-                lastimgxpos = transform.position.x;
-                handledash();
-            
+            Debug.Log("attempt to dash");
+            isdashing = true;
+            dashtimeleft = dashtime;
+            lastdash = Time.time;
+            if (afterImgPool.instance == null)
+                return;
+            afterImgPool.instance.getfrompool();
+            lastimgxpos = transform.position.x;
+            handledash();
+
         }
 
 
@@ -645,20 +675,20 @@ namespace topdown{
         //changes rb2d velocity
         void checkdash()
         {
-                canmove = false;
-                Vector3 dashdir = dashspeed * lastpointeddir ;
-                rb2d.velocity = Vector3.ClampMagnitude(dashdir, magclamp) ;
-                dashtimeleft -= Time.deltaTime;
-                if (Mathf.Abs(transform.position.x - lastimgxpos) > distancebetweenimg)
-                {
+            canmove = false;
+            Vector3 dashdir = dashspeed * lastpointeddir;
+            rb2d.velocity = Vector3.ClampMagnitude(dashdir, magclamp);
+            dashtimeleft -= Time.deltaTime;
+            if (Mathf.Abs(transform.position.x - lastimgxpos) > distancebetweenimg)
+            {
                 if (afterImgPool.instance == null)
                     return;
-                    afterImgPool.instance.getfrompool();
-                    lastimgxpos = transform.position.x;
-                }
+                afterImgPool.instance.getfrompool();
+                lastimgxpos = transform.position.x;
+            }
 
-                currentstam -= Time.deltaTime * stamdecrease;
-            
+            currentstam -= Time.deltaTime * stamdecrease;
+
         }
 
 
@@ -668,12 +698,12 @@ namespace topdown{
 
             //add box cast and trail renderer
             RaycastHit2D[] hitlinecol = Physics2D.LinecastAll(transform.position, transform.position + dashvector, enemies);
-            foreach(RaycastHit2D ray in hitlinecol)
-            if (ray.collider != null)
-            {
-                    
+            foreach (RaycastHit2D ray in hitlinecol)
+                if (ray.collider != null)
+                {
+
                     ray.collider.GetComponent<Enemy>().dieSlice();
-            }
+                }
             transform.position += dashvector;
         }
 
@@ -689,7 +719,7 @@ namespace topdown{
             //Trail.enabled = true;
             SlashAnimation.SetActive(true);
             float angle = Mathf.Atan2(lookaheadDir.y, lookaheadDir.x) * Mathf.Rad2Deg;
-            SlashAnimation.transform.rotation = Quaternion.AngleAxis(angle -90, Vector3.forward);
+            SlashAnimation.transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
             SlashAnimation.transform.position = transform.position;
             StartCoroutine("deactivatetrail");
         }
@@ -726,14 +756,14 @@ namespace topdown{
         public void LedgeMove()
         {
             Debug.Log("Moving away from ledge");
-            
+
 
             transform.position = Vector3.MoveTowards(transform.position, -descenddir, .6f * Time.deltaTime);
             //float dist = Vector2.Distance(transform.position, ledgeref.currentEnemy.position);
             //if (dist <= .1f)
             //{
             //    //ledgeref.currentEnemy.GetComponent<Enemy>().Die();
-                
+
             //    onledge = false;
             //    enemyledgeatk = false;
             //    rb2d.bodyType = RigidbodyType2D.Dynamic;
@@ -765,7 +795,7 @@ namespace topdown{
 
         public void Offledge()
         {
-            rb2d.bodyType  = RigidbodyType2D.Dynamic;
+            rb2d.bodyType = RigidbodyType2D.Dynamic;
             canmove = true;
         }
 
@@ -774,10 +804,10 @@ namespace topdown{
         //moves player to ledge(glitchy)
         public void GoToLedge()
         {
-            
+
             float dist = Vector2.Distance(transform.position, ledgepos.position);
 
-              //keep moving until position is close enough
+            //keep moving until position is close enough
             if (dist > .05f)
                 transform.position = Vector3.MoveTowards(transform.position, ledgepos.position, 1.5f * Time.deltaTime);
 
@@ -812,14 +842,14 @@ namespace topdown{
 
 
 
-        public void MoveInSeconds(ref float timer ,Vector3 startpos ,  Vector3 endPos, float time)
+        public void MoveInSeconds(ref float timer, Vector3 startpos, Vector3 endPos, float time)
         {
 
             timer += Time.deltaTime / time;
 
             transform.position = Vector3.Lerp(startpos, endPos, timer);
-                //yield return null;
-            
+            //yield return null;
+
             //playeranim.SetTrigger("moving");
             //print("done moving player to position");
         }
@@ -901,13 +931,13 @@ namespace topdown{
 
             //}
         }
-        
+
         public bool IsAnamationFinished()
         {
             AnimatorStateInfo upanim = upper.GetCurrentAnimatorStateInfo(0);
-            if(upanim.IsName("knife_swing"))
+            if (upanim.IsName("knife_swing"))
             {
-                
+
                 Debug.Log("swinging knife");
                 Debug.Log(upper.GetCurrentAnimatorStateInfo(0).length);
             }
@@ -918,7 +948,7 @@ namespace topdown{
                 return true;
             }
 
-                return false;
+            return false;
         }
 
         public bool Isattacking()
@@ -944,11 +974,11 @@ namespace topdown{
         {
 
 
-            if(currentstam > 1 )
+            if (currentstam > 1)
             {
                 //activate slowmode effects on slowmode manager
                 postProcessCtrl.SetBlurActive(true);
-                if(Time.timeScale >.51)
+                if (Time.timeScale > .51)
                 {
                     Time.timeScale = .5f;
                 }
@@ -967,24 +997,27 @@ namespace topdown{
 
         public void MoveLookAhead()
         {
-            
+
             if (Mouse.current.delta.ReadValue().magnitude > .2)
             {
-                
+
                 mousepos = Camera.main.ScreenToWorldPoint(InputMousePos);
                 //Vector3.Normalize(InputLook);
                 //print("cam to screen mouse is " + Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()));
                 //print("mouse pos is " + Mouse.current.position.ReadValue());
                 //print("normalized input look is " + mousepos.normalized);
 
-                
+
                 lookaheadDir = mousepos - (Vector2)transform.position;
+
                 inventory.PointDir = lookaheadDir;
                 //print("mouse being moved mouse dif is " + lookaheadDir);
-                LookAheadTransform.position = transform.position + new Vector3(Mathf.Clamp(lookaheadDir.x, -4, 4), Mathf.Clamp(lookaheadDir.y, -4, 4)) / 2f;
+                //if (lookaheadDir.magnitude > 3)
+                //    LookAheadTransform.position = transform.position + new Vector3(Mathf.Clamp(lookaheadDir.x, -4, 4), Mathf.Clamp(lookaheadDir.y, -4, 4)) / 2f;
+                //else LookAheadTransform.position = transform.position;
                 //LookAheadTransform.position = Vector2.Lerp(LookAheadTransform.position, InputMousePos, .5f);
 
-                //Vector2 AimDir = LookAheadTransform.position - transform.position;
+                    //Vector2 AimDir = LookAheadTransform.position - transform.position;
                 float angle = Mathf.Atan2(lookaheadDir.y, lookaheadDir.x) * Mathf.Rad2Deg;
                 Quaternion q = Quaternion.Euler(0f, 0f, angle - 90);
                 SlashIndicator.transform.rotation = q;
@@ -1006,32 +1039,32 @@ namespace topdown{
 
 
             }
-            else if (move.magnitude > .1f && InputLook.magnitude < .3 && !OnMouseControl)
-            {
-                //InputLook = Vector2.zero;
-                //lookaheadDir = new Vector2(Mathf.Round(move.x), Mathf.Round(move.y));
-                lookaheadDir = move  * 2;
-                inventory.PointDir = lookaheadDir;
+            //else if (move.magnitude > .1f && InputLook.magnitude < .3 && !OnMouseControl)
+            //{
+            //    //InputLook = Vector2.zero;
+            //    //lookaheadDir = new Vector2(Mathf.Round(move.x), Mathf.Round(move.y));
+            //    lookaheadDir = move  * 2;
+            //    inventory.PointDir = lookaheadDir;
 
-                //print("look ahead dir while movings is " + move);
-                //lookaheadDir = (transform.position + move) * 2;
-                //float t = (int)(((LookAheadSpeed * Time.deltaTime) / (1/32)) + 0.5f) * (1/32);
+            //    //print("look ahead dir while movings is " + move);
+            //    //lookaheadDir = (transform.position + move) * 2;
+            //    //float t = (int)(((LookAheadSpeed * Time.deltaTime) / (1/32)) + 0.5f) * (1/32);
 
-                //LookAheadTransform.position = Vector3.Lerp(LookAheadTransform.position, lookaheadDir, LookAheadSpeed);
-
-
-                //only do this if mouse looking bool is set to false
-                LookAheadTransform.position = Vector3.Slerp(LookAheadTransform.transform.position, transform.position + (Vector3)lookaheadDir, .3f);
-                float angle = Mathf.Atan2(lookaheadDir.y, lookaheadDir.x) * Mathf.Rad2Deg;
-                Quaternion q = Quaternion.Euler(0f, 0f, angle - 90);
-                SlashIndicator.transform.rotation = q;
-                //print("slash indicator angle is " + angle);
+            //    //LookAheadTransform.position = Vector3.Lerp(LookAheadTransform.position, lookaheadDir, LookAheadSpeed);
 
 
+            //    //only do this if mouse looking bool is set to false
+            //    LookAheadTransform.position = Vector3.Slerp(LookAheadTransform.transform.position, transform.position + (Vector3)lookaheadDir, .3f);
+            //    float angle = Mathf.Atan2(lookaheadDir.y, lookaheadDir.x) * Mathf.Rad2Deg;
+            //    Quaternion q = Quaternion.Euler(0f, 0f, angle - 90);
+            //    SlashIndicator.transform.rotation = q;
+            //    //print("slash indicator angle is " + angle);
 
-            }
 
-            
+
+            //}
+
+
 
 
 
@@ -1055,7 +1088,7 @@ namespace topdown{
         //points a line in direction of trajectory
         public void AimThrow()
         {
-            if(AimLine.enabled == false)
+            if (AimLine.enabled == false)
             {
                 AimLine.enabled = true;
             }
@@ -1063,7 +1096,7 @@ namespace topdown{
             AimLine.SetPosition(1, LookAheadTransform.position);
             aimfloat = Time.time * AimdotSpeed;
             AimMat.SetTextureOffset("_BaseMap", new Vector2(-aimfloat, 0));
-            
+
         }
 
         public void restrain()
@@ -1087,9 +1120,9 @@ namespace topdown{
 
             float shakedir = InputMove.x;
 
-            if(shakeright)
+            if (shakeright)
             {
-                if(shakedir > 0)
+                if (shakedir > 0)
                 {
                     shake++;
                     Debug.Log("shook right");
@@ -1098,7 +1131,7 @@ namespace topdown{
             }
             else
             {
-                if(shakedir < 0)
+                if (shakedir < 0)
                 {
                     shake++;
                     Debug.Log("shook left");
@@ -1106,6 +1139,7 @@ namespace topdown{
                 }
             }
         }
+
 
         public void death()
         {
@@ -1180,7 +1214,7 @@ namespace topdown{
 
         public void DisablePlayerCol()
         {
-            
+
             Capcol.enabled = false;
         }
 
@@ -1191,11 +1225,12 @@ namespace topdown{
         }
 
 
+
         public void DisableHurtBox()
         {
             Hurtbox.enabled = false;
             print("disabling hurtbox");
-            
+
         }
 
 
@@ -1212,14 +1247,37 @@ namespace topdown{
             m_CurrentClipInfo = playeranim.GetCurrentAnimatorClipInfo(0);
             string m_ClipName = m_CurrentClipInfo[0].clip.name;
             Debug.Log("clib length is " + m_CurrentClipInfo[0].clip.length);
-            if ( m_ClipName == "BackATK")
+            if (m_ClipName == "BackATK")
             {
                 transform.position += new Vector3(0, .3f, 0);
             }
         }
 
 
-        
+        public void SetWait()
+        {
+            if (!InDialogue)
+            {
+                canmove = false;
+                move = Vector2.zero;
+                InDialogue = true;
+                _inputActions.Player.Disable();
+                _inputActions.UI.Enable();
+                print("Setting player to wait");
+                //only change view direction
+                //playeranim.SetTrigger("Wait");
+            }
+            else
+            {
+                canmove = true;
+                InDialogue = false;
+                _inputActions.Player.Enable();
+                print("Setting player to wait");
+                //only change view direction
+                //playeranim.SetTrigger("Wait");
+            }
+        }
+
         //first places player in a door of room 
         public void WalkInDir(Vector2 pos, Vector2 Dir)
         {
@@ -1231,8 +1289,8 @@ namespace topdown{
             TransitioningToLevel = true;
             move = Vector2.zero;
             setVelocity(true);
-            print("Setting wait");
-            playeranim.SetTrigger(wait);
+            print("Setting walk dir");
+            playeranim.SetTrigger("Wait");
             //StartCoroutine(StartWalking(Dir));
         }
 
@@ -1287,14 +1345,14 @@ namespace topdown{
             print("started walking co routine towards dir" + Dir);
 
             //yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) && SequenceDone);
-            UITextNotificationController.instance.ShowNotification(false);
+            //UITextNotificationController.instance.ShowNotification(false);
             float secondstoReach = 1.5f;
             TransitioningToLevel = true;
             while (secondstoReach > 0)
             {
                 InputMove = Dir.normalized;
                 secondstoReach -= Time.deltaTime;
-                if(moving)
+                if (moving)
                 {
                     print("player canceled walking coroutine");
                     secondstoReach = 0;
@@ -1304,82 +1362,39 @@ namespace topdown{
             move = Vector3.zero;
             EnableCollider();
             TransitioningToLevel = false;
-            
+
             GetComponent<SpriteRenderer>().enabled = true;
             EnableCollider();
             print("finished walking co routine");
         }
 
 
-        //will check what item to target
-        void TargetInteractableOjects()
-        {
-            //get all interactable collisions around player
-            int interactableLM = 1 << 18;
-            //print("layer mask is " + interactableLM);
 
-            Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, 1, interactableLM);
-            if(cols != null)
-            {
-                //check for closest and most infront of player
-                float closest = float.MaxValue;
-                print("collisons to items is " + cols.Length);
-                if(cols.Length > 1)
-                {
-                    print("Many items near player");
-                    for (int i = 0; i < cols.Length; i++)
-                    {
-                        float currentDist = Vector3.Distance(transform.position, cols[i].transform.position);
-                        Vector3 forward = transform.TransformDirection(Vector3.forward);
-                        Vector3 toOther = cols[i].transform.position - transform.position;
-                        float currentDot = Vector3.Dot(forward, toOther) -1;
-                        float CurrentDistAndDot = currentDist + currentDot;
-                        if(CurrentDistAndDot < closest)
-                        PlayerInteractableTarget = cols[i].GetComponent<PlayerInteractable>();
-                    }
-                }
-                else if(cols.Length == 1)
-                {
-                    
-                    PlayerInteractableTarget = cols[0].GetComponent<PlayerInteractable>();
-                    print("one item near player, "+ PlayerInteractableTarget.gameObject.name);
-                }
-            }
-            else
-            {
-
-                PlayerInteractableTarget = null;
-            }
-
-            if
-            (PlayerInteractableTarget != null)
-            {
-                InteractUIBehavior.instance.DisplayUI(() => print("on item"), PlayerInteractableTarget.transform.position, "To inspect");
-            }
-        }
 
 
         public void OnDrawGizmos()
         {
             Gizmos.color = Color.yellow;
             Gizmos.DrawLine(transform.position, transform.position + dashvector);
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(transform.position, 1);
         }
 
 
         public void OnTriggerEnter2D(Collider2D collision)
         {
 
-            if(collision.IsTouching(Parrybox))
+            if (collision.IsTouching(Parrybox))
             {
-                if(collision.gameObject.layer == 15)
+                if (collision.gameObject.layer == 15)
                 {
                     Debug.Log("enemy attack parried, from :" + collision.gameObject, collision.gameObject);
                     Instantiate(sparkanimation, Parrybox.ClosestPoint(collision.transform.position), Quaternion.identity);
                     IparryInterface parryenemy = collision.GetComponentInParent<IparryInterface>();
-                    if(parryenemy != null)
+                    if (parryenemy != null)
                     {
                         parryenemy.Stunned();
-                        HitStop.instance.TimeStop();
+                        HitEffectManager.instance.TimeStop();
                     }
                     else
                     {
@@ -1391,23 +1406,21 @@ namespace topdown{
                 }
             }
 
-            if (collision.CompareTag("enemy"))
-            {
 
-                //print("enemy touched");
-                if (collision.IsTouchingLayers(1 << 12))
-                {
-                    print("enemy is touching layer " + hitboxlayer);
-                    //playeranim.SetTrigger("Hurt");
-                    Debug.Log("attack hit" + collision.name, collision.gameObject);
-                    
-                    collision.GetComponent<Enemy>().Die();
-                    
-                }
+            //print("enemy touched");
+            if (collision.IsTouchingLayers(1 << 12))
+            {
+                print("enemy is touching layer " + hitboxlayer);
+                //playeranim.SetTrigger("Hurt");
+                Debug.Log("attack hit" + collision.name, collision.gameObject);
+
+                collision.GetComponent<Ikillable>().Die(transform.position);
 
             }
-            
-            
+
+           
+
+
         }
 
     }

@@ -932,7 +932,7 @@ Transform:
   m_GameObject: {fileID: 1950097101}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.032, y: 0, z: 0}
-  m_LocalScale: {x: 11.31, y: 8.2, z: 1}
+  m_LocalScale: {x: 100, y: 90, z: 1}
   m_Children: []
   m_Father: {fileID: 4794363364259981626}
   m_RootOrder: 12
@@ -1168,7 +1168,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.125, y: 0.125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -1325,7 +1325,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.125, y: 0.125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -1433,7 +1433,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.125, y: 0.125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -1716,7 +1716,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.125, y: 0.125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -1874,7 +1874,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.125, y: 0.125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -2031,7 +2031,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.125, y: 0.125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -2306,7 +2306,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EdgeOffset: 0.81
-  gridworldsize: {x: 11.23, y: 7.8}
+  gridworldsize: {x: 11.3, y: 8}
   RightEntrancepoints:
   - {x: 6.17, y: 0.85, z: 0}
   - {x: 6.17, y: 0.35, z: 0}
@@ -2339,6 +2339,7 @@ MonoBehaviour:
   wallmask:
     serializedVersion: 2
     m_Bits: 512
+  floor: 0
   EastNeighborPoint: {fileID: 0}
   WestNeighborPoint: {fileID: 0}
   NorthNeighborPoint: {fileID: 0}
@@ -2358,8 +2359,11 @@ MonoBehaviour:
     type: 3}
   horizontalwallprefab: {fileID: 3989061875928522951, guid: 4307c84a3a228a6469f74757dfa3c8ed,
     type: 3}
+  player: {fileID: 0}
   TweenObjects: []
   InnerRoomLight: {fileID: 1252120380167703074, guid: a7a206f26d467024f9ca73004499aa89,
+    type: 3}
+  SubRoomBase: {fileID: 2439414659981066712, guid: 28bcdcd4c5498fe44a7b944ed4599fac,
     type: 3}
 --- !u!50 &1827351707
 Rigidbody2D:
@@ -2587,7 +2591,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.125, y: 0.125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -2802,7 +2806,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.125, y: 0.125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

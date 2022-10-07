@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-
+//some methods can be moved to another class called roomcreator
 public class Room
 {
     int startnode;
@@ -22,6 +22,7 @@ public class Room
     List<Roomtile> entrancepoints = new List<Roomtile>();
     int gridsizex;
     int gridsizey;
+    GameObject SubRoomBase;
     public GameObject VerticalWall;
     public GameObject HorizontalWall;
     public GameObject InstancedVertWall;
@@ -38,15 +39,14 @@ public class Room
     string InnerWallLayer;
     public GameObject roombase;
 
-    public Room(int gridsizex, int gridsizey, Roomtile[,] grid, List<Room> rooms, List<Roomtile> entrancepoints, GameObject vertwall, GameObject horiwall, GameObject parent, string InnerWallLayer)
+    public Room(int gridsizex, int gridsizey, Roomtile[,] grid, List<Room> rooms, List<Roomtile> entrancepoints, GameObject SubRoomBase, GameObject parent, string InnerWallLayer)
     {
         this.gridsizex = gridsizex;
         this.gridsizey = gridsizey;
         this.grid = grid;
         this.rooms = rooms;
         this.entrancepoints = entrancepoints;
-        VerticalWall = vertwall;
-        HorizontalWall = horiwall;
+        this.SubRoomBase = SubRoomBase;
         this.Parent = parent;
         this.InnerWallLayer = InnerWallLayer;
     }
@@ -54,16 +54,14 @@ public class Room
     //creates a game object holding asstes that make up a small room for RoomGen
     public GameObject Makesegments()
     {
-        roombase = new GameObject("room base");
+        //set room base child of roomgen
+        roombase = GameObject.Instantiate(SubRoomBase);
         roombase.transform.parent = Parent.transform;
-        float startcheck = Random.value;
-        //start on the bottom or top of room?
-        firstwall = startcheck < .5 ? 0 : gridsizey - 1;
 
-        //check if there are already 2 rooms in that axis
-        SwitchFirstWall();
+        ChoseStartingPoint();
 
-        //range for start point in x axis for room
+
+        //choose a random range between min and max lenghts
         int wallrangestart = (23 * gridsizex - 1) / 100;
         int wallrangeend = (77 * gridsizex - 1) / 100;
         int randomnode = GetRandomPoint(wallrangestart, wallrangeend);
@@ -80,8 +78,8 @@ public class Room
         }
         //Debug.Log("start wall is" + startwall);
         roombase.transform.position =  startwall;
-        InstancedVertWall = GameObject.Instantiate(VerticalWall);
-        InstancedVertWall.transform.SetParent(roombase.transform);
+        //InstancedVertWall = GameObject.Instantiate(VerticalWall);
+        //InstancedVertWall.transform.SetParent(roombase.transform);
 
 
         startx = randomnode;
@@ -110,27 +108,43 @@ public class Room
 
 
 
-        InstancedVertWall.GetComponent<wall>().setwallpos(startwall, corner, firstwall);
-        InstancedVertWall.AddComponent<BoxCollider2D>();
+        roombase.GetComponentInChildren<wall>().setwallpos(startwall, corner, firstwall);
         //wall3 = new GameObject("last point");
         thirdwall = closingwall;
         //wall3.transform.position = lastwall;
-        GameObject horiwall = GameObject.Instantiate(HorizontalWall);
-        horiwall.transform.position = corner;
+        //GameObject horiwall = GameObject.Instantiate(HorizontalWall);
+
+        //horiwall.transform.SetParent(roombase.transform);
+        //horiwall.transform.position = corner;
         //Debug.Log("corner is " + corner);
-        wallDoor HoriwallDoorRef = horiwall.GetComponent<wallDoor>();
+        wallDoor HoriwallDoorRef = roombase.GetComponentInChildren<wallDoor>();
+        //commented to position the door in a relative position
+        //HoriwallDoorRef.transform.parent.position = corner;
+        float RelativeCorner = Mathf.Abs(startwall.y - corner.y) ;
+        HoriwallDoorRef.transform.parent.position += new Vector3(0, RelativeCorner) ;
+        //HoriwallDoorRef.transform.position = new Vector3(0, RelativeCorner) ;
         HoriwallDoorRef.SetHorizontalWall(corner, lastwall, enclosingleft);
-        wall vertwallref = InstancedVertWall.GetComponent<wall>();
+        wall vertwallref = roombase.GetComponentInChildren<wall>();
         //if the wall is on the bottom
         if(firstwall == 0)
         {
             HoriwallDoorRef.SetInnerWallLayer(InnerWallLayer);
             vertwallref.LowerWall = true;
         }
-        horiwall.transform.SetParent(roombase.transform);
+        else
+        {
+            roombase.transform.localScale = new Vector3(roombase.transform.localScale.x, roombase.transform.localScale.y * -1);
+        }
         //endwall = new Vector2(randomnode, gridworldsize.y);
+        if (!enclosingleft)
+        {
+            Debug.Log("not enclosing left", SubRoomBase);
+            roombase.transform.localScale = new Vector3(roombase.transform.localScale.x * -1, roombase.transform.localScale.y );
+        }
         return roombase;
     }
+
+
 
 
     //choses where the vertical wall will end
@@ -227,6 +241,8 @@ public class Room
             closingwall = lastcheck < .5 ? 0 : gridsizex - 1;
             enclosingleft = lastcheck < .5 ? true : false;
         }
+        //temporary code to test scale modification
+        //enclosingleft = true;
     }
 
     
@@ -258,6 +274,41 @@ public class Room
         //not programmed yet
     }
 
+    //picks a random wall to spawn a subroom on
+    void ChoseStartingPoint()
+    {
+        float startcheck = Random.value;
+        //start on the bottom or top of room?
+        firstwall = startcheck < .5 ? 0 : gridsizey - 1;
+        if(IsRowFull(firstwall))
+        {
+            //reverse firstwall var
+            firstwall = firstwall == 0 ? gridsizey - 1 : 0;
+        }
+    }
+
+    //checks if top or bottom row is full
+    bool IsRowFull(int Wall)
+    {
+        int RoomsOnAxis = 0;
+        //could change to a for loop with a variable of maxroom size
+        foreach (Room room in rooms)
+        {
+            if (room.firstwall == Wall)
+            {
+                RoomsOnAxis++;
+                //if there's more than 1 room on this axis
+                if (RoomsOnAxis > 1)
+                {
+                    //reverse firstwall var
+                    //Debug.Log("switching wall");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     //checks if there's already 2 small rooms on the same side
     void SwitchFirstWall()
     {
@@ -273,7 +324,6 @@ public class Room
             //if there's more than 1 room on this axis
             if (RoomsOnAxis > 1)
             {
-                //reverse firstwall var
                 firstwall = firstwall == 0 ? gridsizey - 1 : 0;
                 //Debug.Log("switching wall");
                 return;

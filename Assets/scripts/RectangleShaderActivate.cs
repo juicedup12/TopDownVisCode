@@ -3,18 +3,19 @@
 public class RectangleShaderActivate : MonoBehaviour
 {
     SpriteRenderer sprRendr;
-    Material mat;
+    private Material mat;
     float noiseStr = 1;
     public float DissolveRate = .5f;
     public bool activateDissolve = false;
+    public Material MaskMat { get { return mat; }}
 
 
     // Start is called before the first frame update
     void Start()
     {
-        sprRendr = GetComponent<SpriteRenderer>();
-        mat = sprRendr.material;
-        mat.SetFloat("Noise_Strength", 1);
+        //sprRendr = GetComponent<SpriteRenderer>();
+        mat = GetComponent<Renderer>().material;
+        //mat.SetFloat("Noise_Strength", 1);
     }
 
     // Update is called once per frame
@@ -36,7 +37,8 @@ public class RectangleShaderActivate : MonoBehaviour
     }
 
 
-    public void RemoveDesolve()
+
+    public void RemoveDissolve()
     {
         mat.SetFloat("Noise_Strength", 1);
     }

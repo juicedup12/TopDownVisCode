@@ -15,6 +15,7 @@ public class ScreenMesh : MonoBehaviour
         Opacity = 0;
         Mesh mesh = new Mesh();
         mat = GetComponent<MeshRenderer>().material;
+        GetComponent<MeshRenderer>().sortingOrder = 10;
         canvas = GetComponentInParent<Canvas>();
         Vector3[] vertices = new Vector3[4];
         Vector2[] uv = new Vector2[4];
@@ -23,12 +24,16 @@ public class ScreenMesh : MonoBehaviour
         float height = Camera.main.orthographicSize ;
         float width = height * Camera.main.aspect;
 
-        vertices[0] = new Vector3(-width, height, 0);
-        vertices[1] = new Vector3(width, height, 0);
-        vertices[2] = new Vector3(width, -height, 0);
-        vertices[3] = new Vector3(-width, -height, 0);
+        //vertices[3] = new Vector3(-width, height, 0);
+        //vertices[2] = new Vector3(width, height, 0);
+        //vertices[1] = new Vector3(width, -height, 0);
+        //vertices[0] = new Vector3(-width, -height, 0);
 
-
+        Transform CamPos = Camera.main.transform;
+        vertices[3] = CamPos.forward + new Vector3(-width, height, 0);
+        vertices[2] = CamPos.forward + new Vector3(width, height, 0);
+        vertices[1] = CamPos.forward + new Vector3(width, -height, 0);
+        vertices[0] = CamPos.forward + new Vector3(-width, -height, 0);
 
 
         uv[0] = new Vector2(0, 0);

@@ -78,5 +78,6 @@ public class InteractUIBehavior : MonoBehaviour
     {
         OnAccept = null;
         gameObject.SetActive(false);
+        print("hiding ui");
     }
 }

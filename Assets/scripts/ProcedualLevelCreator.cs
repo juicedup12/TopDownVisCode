@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace topdown
 {
-    public class ProcedualLevelCreator : MonoBehaviour
+    public class ProcedualLevelCreator : MonoBehaviour, iStageBuild
     {
         public float gridoffset;
         public GameObject roombase, BossRoom;
@@ -34,23 +34,19 @@ namespace topdown
         public int iterationSteps = 100000;
         char up = 'u', down = 'd', left = 'l', right = 'r';
         static List<Transform> RoomList = new List<Transform>();
+        player player;
+        public player _player { set { player = value; } }
 
 
         // Start is called before the first frame update
         void Start()
         {
-            Setup();
-            CreateFloors();
+            //Setup();
+            //CreateFloors();
             //SpawnLevel();
             //OpenDoors();
             //GenerateRoomAssets();
             //deactivateRooms();
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
 
 
@@ -435,8 +431,6 @@ namespace topdown
         void finishWalker(RandomWalker CurrentWalker)
         {
             //chance: destroy Walker
-            //refactor to add condition if walker has taken enough steps
-            //refactor to only remove walkers that aren't main path
 
             if (CurrentWalker.mainwalker)
                 return;
@@ -723,6 +717,19 @@ namespace topdown
                 Debug.Log("spawning boss room at " +( new Vector3(x, y, 0) * gridoffset));
             RoomList.Add(NewRoom.transform);
             return NewRoom;
+        }
+
+        public void SetupLevels()
+        {
+            Setup();
+            CreateFloors();
+            roomGrid[5, 0].transform.position = Vector3.zero;
+            roomGrid[5, 0].gameObject.SetActive(true);
+        }
+
+        public Vector2 getspawn()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

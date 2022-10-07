@@ -244,9 +244,9 @@ namespace topdown
         {
             
             sliceObj._player = _player ;
-            RectShader.RemoveDesolve();
+            RectShader.RemoveDissolve();
             StartCoroutine(StartDissolve(room.parent.position));
-            sliceObj.SliceInitialize(room, direction);
+            //sliceObj.SliceInitialize(room, direction);
             
         }
 

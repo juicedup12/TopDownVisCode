@@ -8,7 +8,8 @@ using UnityEngine.Experimental.Rendering.Universal;
 
 namespace topdown
 {
-    public class RoomGen : MonoBehaviour
+    //need this to inherit from iLevelBuild
+    public class RoomGen : MonoBehaviour 
     {
         //local space vectors
         public float EdgeOffset;
@@ -50,7 +51,7 @@ namespace topdown
         public bool drawgrid = false;
         Vector2 startwall;
         Vector2 endwall;
-        List<Room> rooms = new List<Room>();
+        List<Room> RoomsList = new List<Room>();
         public SpriteRenderer LeftEntrance, RightEntrance, TopEntrance, BottomEntrance;
         public SpriteMask maskleft, maskright, masktop, maskbottom;
         public GameObject verticalwallprefab;
@@ -61,8 +62,9 @@ namespace topdown
         public List<Transform> TweenObjects;
         CopyNodeGrid nodegrid;
         public GameObject InnerRoomLight;
-        
-        
+        [SerializeField] GameObject SubRoomBase;
+
+        public player _player { set => this.player = value; }
 
         void Awake()
         {
@@ -71,28 +73,28 @@ namespace topdown
             gridsizeX = Mathf.RoundToInt(gridworldsize.x / nodediameter);
             gridsizeY = Mathf.RoundToInt(gridworldsize.y / nodediameter);
             worldbottomleft = transform.position - Vector3.right * gridworldsize.x / 2 - Vector3.up * gridworldsize.y / 2;
-            player = GameObject.Find("Player ").GetComponent<player>();
+            //player = GameObject.Find("Player ").GetComponent<player>();
         }
 
         //Start is called before the first frame update
         void Start()
         {
-            TileHolder = GameObject.Find("TileParent");
-            enemyPrefabs = roomdata.enemies;
-            nodegrid = GetComponentInChildren<CopyNodeGrid>();
+            //TileHolder = GameObject.Find("TileParent");
+            //enemyPrefabs = roomdata.enemies;
+            //nodegrid = GetComponentInChildren<CopyNodeGrid>();
             creategrid();
-            createTilegridPositions();
-            EntrancePointsToGridCoordinates();
+            //createTilegridPositions();
+            //EntrancePointsToGridCoordinates();
 
-            CameraManager.instance.TransferCam(gameObject);
-            //put walls in a sequence
-            WallsToSeq();
+            //CameraManager.instance.TransferCam(gameObject);
+            ////put walls in a sequence
+            //WallsToSeq();
 
             MakeRandomRooms();
-            ChangeGridEmpty();
-            ChangeGridInRoom();
+            //ChangeGridEmpty();
+            //ChangeGridInRoom();
             //StartCoroutine( StartTweening());
-            StartCoroutine(BeginTween());
+            //StartCoroutine(BeginTween());
 
             //SpawnItem();
 
@@ -100,7 +102,7 @@ namespace topdown
             //makewall();
             //SpawnEnemy();
 
-            
+
 
             //PlaceFloorInRoom();
 
@@ -108,17 +110,22 @@ namespace topdown
             //OuterWallsFallInTween();
             //RotateRooms();
             //RotateFloorTiles();
+            RoomController.Instance.AssignTimeControllers(this);
+            RandomAnimationProvider.Instance.AssignRandomSubRoomAnimation(roomgameobjects.ToArray());
+               
         }
 
-        private IEnumerator BeginTween()
+
+        //fix later to remove yield statements
+        public void SetupLevels()
         {
             
             IRoomTransitioner[] transitions = GetComponents<IRoomTransitioner>();
-            foreach(IRoomTransitioner t in transitions)
-            {
-                t.DoRoomTransition();
-            }
-            yield return new WaitForSeconds(3);
+            //foreach(IRoomTransitioner t in transitions)
+            //{
+            //    t.DoRoomTransition(this);
+            //}
+            //yield return new WaitForSeconds(3);
             CameraManager.instance.TransferCamToPlayer();
             player.SequenceDone = true;
             //EnterRoomTxt.enabled = true;
@@ -486,13 +493,14 @@ namespace topdown
         }
 
 
-        //move to a subtype class
+        //move to a subtype class for expansion
         public void makewall()
         {
-            Room wall = new Room(gridsizeX, gridsizeY, grid, rooms, GridEntrancePoints, verticalwallprefab, horizontalwallprefab, gameObject, roomdata.InsideOfRoomSortLyaer);
+            Room wall = new Room(gridsizeX, gridsizeY, grid, RoomsList, GridEntrancePoints, SubRoomBase, gameObject, roomdata.InsideOfRoomSortLyaer);
             GameObject roombase = wall.Makesegments();
+            //why is there a list for objects and class references
             roomgameobjects.Add(roombase);
-            rooms.Add(wall);
+            RoomsList.Add(wall);
 
         }
 
@@ -687,13 +695,14 @@ namespace topdown
         }
         
         //should be part of an interface method as stated above
+        //rotates the base room while rotating the horizontal wall
         Sequence RotateRooms()
         {
             Sequence RotSeq = DOTween.Sequence();
             for (int i = 0; i < roomgameobjects.Count; i++)
             {
                 Vector2 originalrot = roomgameobjects[i].transform.rotation.eulerAngles;
-                Room room = rooms[i];
+                Room room = RoomsList[i];
                 bool Bottom = room.firstwall == 0;
                 if (Bottom)
                 {
@@ -731,7 +740,7 @@ namespace topdown
         //change all tiles that are within walls to notempty
         public void ChangeGridEmpty()
         {
-            foreach (Room room in rooms)
+            foreach (Room room in RoomsList)
             {
                 int starty = room.firstwall;
                 int endy = room.secondwall;
@@ -772,7 +781,7 @@ namespace topdown
         //changes every tile that's within a small room to inside of room
         public void ChangeGridInRoom()
         {
-            foreach (Room room in rooms)
+            foreach (Room room in RoomsList)
             {
                 int starty = room.firstwall;
                 int endy = room.secondwall;
@@ -991,7 +1000,7 @@ namespace topdown
         {
             Sequence seq = DOTween.Sequence();
             int i = 1;
-            foreach(Room room in rooms)
+            foreach(Room room in RoomsList)
             {
                 //add an if condition when room is too big and needs more than 1 light
 
@@ -1054,9 +1063,9 @@ namespace topdown
         //places inner room carpet prefab inside
         Sequence[] PlaceFloorInRoom()
         {
-            Sequence[] Seqs = new Sequence[rooms.Count];
+            Sequence[] Seqs = new Sequence[RoomsList.Count];
             int index = 0;
-            foreach(Room _room in rooms)
+            foreach(Room _room in RoomsList)
             {
                 Sequence seq = DOTween.Sequence();
                 print("Start wall is " + _room.startwall);
@@ -1121,8 +1130,8 @@ namespace topdown
             Gizmos.color = Color.blue;
             //if (startwall != null && endwall != null)
             //Gizmos.DrawLine(startwall, endwall);
-            if (rooms != null)
-                foreach (Room room in rooms)
+            if (RoomsList != null)
+                foreach (Room room in RoomsList)
                 {
                     if (room.startwall != null && room.corner != null)
                     {
@@ -1267,6 +1276,11 @@ namespace topdown
                 InteractUIBehavior.instance.HideUI();
             }
 
+        }
+
+        public Vector2 getspawn()
+        {
+            throw new System.NotImplementedException();
         }
     }
 

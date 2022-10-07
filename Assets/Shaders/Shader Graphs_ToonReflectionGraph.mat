@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Shader Graphs_ToonReflectionGraph
+  m_Shader: {fileID: -6465566751694194690, guid: f2d5f99aedd1391489885bd870e7c3af,
+    type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Floats:
+    - Vector1_2C9E57B7: 0.51
+    - Vector1_36310038: 2.48
+    - Vector1_A18319: 0.07
+    - Vector1_DAB8186C: 0.8
+    - Vector1_F865EA95: 0.4
+    - Vector1_FC4F03BE: 1.65
+    m_Colors:
+    - Color_185A7F63: {r: 0.074509814, g: 0.7827296, b: 0.8509804, a: 0.2}

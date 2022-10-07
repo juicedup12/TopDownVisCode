@@ -12,14 +12,16 @@ class FloorTransition : MonoBehaviour, IRoomTransitioner
     private GameObject TilePrefab;
     [SerializeField]
     private float TileDiameter, GridScalar;
+    iStageBuild LevelBuilder;
 
     //tileparent will hold tile game objects for organization
     private GameObject TileParent;
 
 
     //might need a tile radius or diameter var
-    public void DoRoomTransition()
+    public void DoRoomTransition(iStageBuild LevelBuilder)
     {
+        this.LevelBuilder = LevelBuilder;
         createTilegridPositions();
         switch(Transition)
         {
@@ -48,7 +50,7 @@ class FloorTransition : MonoBehaviour, IRoomTransitioner
         foreach (Transform t in FloorTiles)
         {   
             t.rotation = Quaternion.Euler(90,0,0);
-            
+
         }
         Sequence TileRotSeq = DOTween.Sequence();
         int TileGridsizeX = FloorTiles.GetLength(0);
@@ -82,6 +84,7 @@ class FloorTransition : MonoBehaviour, IRoomTransitioner
                     x = xpos;
                 }
             }
+        TileRotSeq.OnComplete(() => LevelBuilder.SetupLevels());
     }
 
    

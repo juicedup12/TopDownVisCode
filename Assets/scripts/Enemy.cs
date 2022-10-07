@@ -151,11 +151,11 @@ namespace topdown
 
         }
 
-        public virtual void Die()
+        public virtual void Die(Vector2 HitPos)
         {
             if (!dead)
             {
-                HitStop.instance.TimeStop();
+                HitEffectManager.instance.TimeStop();
                 anim.SetTrigger("die");
                 print("enemy was killed");
                 WeaponTransform.gameObject.SetActive(false);
@@ -559,7 +559,8 @@ namespace topdown
 
     public interface Ikillable
     {
-        void Die();
+
+        void Die(Vector2 HitPos);
     }
 }
 

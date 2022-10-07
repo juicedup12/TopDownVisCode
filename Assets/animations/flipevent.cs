@@ -55,7 +55,7 @@ namespace topdown
 
                         Debug.Log("hit " + damage.name);
 
-                        damage.GetComponent<Enemy>().Die();
+                        //damage.GetComponent<Enemy>().Die();
                         
                     }
 

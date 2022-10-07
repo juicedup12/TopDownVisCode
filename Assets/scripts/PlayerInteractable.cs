@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using topdown;
+using TMPro;
 
 //base class for objects that the player can interact with
 public class PlayerInteractable : MonoBehaviour
@@ -9,6 +10,10 @@ public class PlayerInteractable : MonoBehaviour
     SelectionBehavior selectionHandler;
     event Action ClickedResponse;
     bool Pressed;
+    //temporary
+    
+    public TextMeshPro DotText;
+
 
     void OnEnable()
     {

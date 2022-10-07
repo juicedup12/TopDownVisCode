@@ -32,10 +32,12 @@ namespace topdown
 
             //if player is waiting to go into level
 
+            m_MonoBehaviour.ControlSlicer();
 
-
+            
             if (m_MonoBehaviour.PressedAccept && m_MonoBehaviour.SequenceDone)
             {
+                //change to execute a callback
                 m_MonoBehaviour.WalkIntoLevel();
             }
         }

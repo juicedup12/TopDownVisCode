@@ -62,7 +62,7 @@ namespace topdown
                     ""id"": ""9f6f0cbd-1546-4bc1-98c3-caaa1fa6391c"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Press(behavior=2)"",
+                    ""interactions"": ""Hold(duration=1),Press(behavior=1)"",
                     ""initialStateCheck"": false
                 },
                 {
@@ -520,6 +520,17 @@ namespace topdown
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""UI"",
+                    ""action"": ""Accept"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9d667d2b-16b7-41f8-bdcc-2e1c32863c15"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Player"",
                     ""action"": ""Accept"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

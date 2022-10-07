@@ -12,11 +12,13 @@ public class Slicer : MonoBehaviour
 {
 
     public GameObject MeshToCut;
+    [SerializeField] Transform HullParent;
+    [SerializeField] ParticlePool particlePool;
     public Vector2 MouseInputPos;
     Vector2 AimPos;
     bool IsClicked;
     public PlayerInput playerinput;
-    
+    float MouseAngle;
     bool ispaused;
     bool canSlice = true;
     public CaptureScreen cap;
@@ -24,68 +26,91 @@ public class Slicer : MonoBehaviour
     SlicedDissolveController dissolver;
     SpriteRenderer SliceAimRenderer;
     public Vector3 angularChangeInDegrees;
+    [SerializeField] Transform SliceAimTransform;
     public int MaxSliceAmount;
     int currentSlices;
     float timer = 0;
     public float PauseTime;
     public Material DisMat;
     delegate IEnumerator Resume(IEnumerator enumerator);
+    [SerializeField] float HullRotationStrength;
     Resume onResume;
-    
+    [SerializeField] Material ParticleMat;
     [HideInInspector]
     public player _player;
+    public float TestAngle;
 
     public RenderTexture RendTex;
     public GameObject CapCam;
 
     BoxCollider boxcol;
-
+    ISliceTextureRetriever textureRetriever;
     Vector2 PlayerMoveDir;
     Transform NextDoor;
 
 
     private void Awake()
     {
-        dissolver = gameObject.GetComponent<SlicedDissolveController>();
+        //dissolver = gameObject.GetComponent<SlicedDissolveController>();
+        ////DisMat = dissolver.dissolvemat;
         sliceanimator = GetComponentInChildren<Animator>();
         SliceAimRenderer = GetComponentInChildren<SpriteRenderer>();
+        dissolver = gameObject.GetComponent<SlicedDissolveController>();
+        //ISliceTextureRetriever textureRetriever = GetComponent<ISliceTextureRetriever>();
+        //DisMat.mainTexture = textureRetriever.RetrieveTex;
+        //textureRetriever.OnCapture = () => SliceAimRenderer.enabled = true;
+        //SliceInitialize();
+        textureRetriever = GetComponent<ISliceTextureRetriever>();
+
+        textureRetriever.OnCapture = () => SliceAimRenderer.enabled = true;
     }
 
-    public void SliceInitialize(Transform nextDoor, Vector2 dir)
+
+    //need to change this to coroutine
+    public void SliceInitialize()
     {
-        
-        gameObject.SetActive(true);
+        enabled = true;
+        MeshToCut.SetActive(true);
+
+        DisMat = MeshToCut.GetComponent<MeshRenderer>().sharedMaterial;
+        DisMat.mainTexture = textureRetriever.RetrieveTex;
+        SliceAimRenderer.enabled = true;
+        //this can be handled by the script that calls slice
+        //gameObject.SetActive(true);
+        DisMat.SetFloat("blend_opacity", 1);
+        DisMat.SetFloat("Noise_Strength", 1);
         timer = 0;
         currentSlices = 0;
         print("pausing time");
         Time.timeScale = 0;
         ispaused = true;
-        
+        canSlice = true;
+        dissolver.BlendAmount = 0;
 
-        
+
         //cap.grab = true;
 
 
 
         DisMat.SetFloat("blend_opacity", 0);
         DisMat.SetFloat("Noise_Strength", 1);
-        dissolver.dissolvemat = MeshToCut.GetComponent<MeshRenderer>().material;
+        //dissolver.dissolvemat = MeshToCut.GetComponent<MeshRenderer>().material;
 
-
-        NextDoor = nextDoor;
-        PlayerMoveDir = dir;
+        //get rid of this
+        //NextDoor = nextDoor;
+        //PlayerMoveDir = dir;
         
         
-        CapCam.SetActive(true);
+        //CapCam.SetActive(true);
     }
 
 
     private void OnEnable()
     {
-        StartCoroutine(EnableEffects());
+        //StartCoroutine(EnableEffects());
     }
 
-    // Start is called before the first frame update
+    //disables render texture cam
     IEnumerator EnableEffects()
     {
         yield return new WaitForEndOfFrame();
@@ -106,12 +131,18 @@ public class Slicer : MonoBehaviour
     void Update()
     {
 
-        //Vector2 mousedir = _player.GetAngleToMouse();
-        if(_player.Attacking)
-        { MouseClick(); }
-        //Debug.Log("mouse dir is " + mousedir.normalized);
-        float angle = _player.GetAngleToMouse();
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        //Vector2 mousedir =
+        //if(_player.Attacking)
+        //{ MouseClick(); }
+
+        Vector3 relative =  transform.position - Camera.main.ScreenToWorldPoint(new Vector3(MouseInputPos.x, MouseInputPos.y, 2.77f));
+        //print("screen to world point: " + Camera.main.ScreenToWorldPoint(MouseInputPos));
+        //print("relative is " + relative);
+        //relative.Normalize();
+        MouseAngle = Mathf.Atan2(relative.y, relative.x) * Mathf.Rad2Deg;
+        //Debug.Log("mouse dir is " + relative.normalized);
+        //print("mouseangle is " + MouseAngle);
+        SliceAimTransform.rotation = Quaternion.AngleAxis(MouseAngle, transform.forward *-1 );
         
     }
 
@@ -124,7 +155,8 @@ public class Slicer : MonoBehaviour
 
     public void MouseClick ()
     {
-        
+        print("can slice is " + canSlice);
+        print("timer is " + timer);
             if(canSlice && timer < Time.unscaledTime)
             DoSlice();
         
@@ -138,23 +170,18 @@ public class Slicer : MonoBehaviour
 
 
 
-    public void DoSlice()
+    void DoSlice()
     {
         print("do slice called");
-        if (currentSlices == MaxSliceAmount - 1)
-        {
-            //add code to immediately start dissolve
-            print("max slices reached");
-            finishSlicing();
-            canSlice = false; 
-        }
-
+       
+        //timer's value is based on the time when the action was called
         if (timer < Time.unscaledTime)
         {
             currentSlices++;
+            //timer will be set to .2 seconds after current time while game is paused
             timer = Time.unscaledTime + .2f;
             sliceanimator.SetTrigger("slice");
-            print("slice successful " + currentSlices);
+            //print("slice successful " + currentSlices);
             
         }
         else
@@ -163,64 +190,147 @@ public class Slicer : MonoBehaviour
             return;
         }
 
-        
-        
-        Collider[] cols = Physics.OverlapBox(transform.position, Vector3.one ,Quaternion.identity);
 
-        //print("overlap box at " + transform.position + "and bounds is " + boxcol.bounds);
+        //Collider[] cols = Physics.OverlapBox(transform.position, Vector3.one * 5 ,Quaternion.identity);
+
+        //print("overlap box at " + transform.position );
         //print("mesh is at " + MeshToCut.transform.position);
         //print("cols amount is " + cols.Length);
 
-        if (cols == null)
+        //if (cols.Length == 0)
+        //{
+        //    print("didn't colide with anything");
+        //    currentSlices--;
+        //    return;
+        //}
+
+        //foreach(Collider col in cols)
+        //{
+        //    print("slicing " + col.gameObject);
+        //    SliceObject(col.gameObject);
+           
+        //}
+
+        //if no slices have happened
+        //slice the screenshot mesh
+        //else
+        //create dissolving hulls on all objects in children of hullparent
+        //if hull created successful
+        //destroy that game object
+
+        if(currentSlices == 1)
         {
-            print("didn't colide with anything");
-            currentSlices--;
-            return;
+            print("created hull: " + CreateDissolvingHulls(MeshToCut));
+        }
+        else
+        {
+            foreach (Transform transform in HullParent)
+            {
+                if (CreateDissolvingHulls(transform.gameObject))
+                {
+                    Destroy(transform.gameObject);
+                }
+            }
         }
 
-        foreach(Collider col in cols)
+        dissolver.DarkenMaterial(MeshToCut.GetComponent<MeshRenderer>().sharedMaterial);
+        if (currentSlices == MaxSliceAmount - 1)
         {
-            //print("slicing " + col.gameObject);
-            SliceObject(col.gameObject);
-           
+            //add code to immediately start dissolve
+            print("max slices reached");
+            finishSlicing();
+            canSlice = false;
         }
-        dissolver.DarkenMaterial();
+
     }
 
 
 
     void SliceObject(GameObject obj)
     {
-
         if (CreateDissolvingHulls(obj))
-        { 
+        {
+            print("hulls created");
             if (obj.CompareTag("mesh"))
             {
                 obj.SetActive(false);
             }
             else
             {
-                obj.gameObject.SetActive(false);
+                //obj.gameObject.SetActive(false);
+                Destroy(obj);
             }
     
         }
+        print("no hulls created");
     }
 
 
+    //player functions will be called in timeline
     void finishSlicing()
     {
         print("resuming time");
         Time.timeScale = 1;
         canSlice = false;
-        dissolver.dissolvemat = MeshToCut.GetComponent<MeshRenderer>().material; ;
-        dissolver.StartDissolve();
-
-        _player.WalkInDir(NextDoor.transform.position, PlayerMoveDir);
-        StartCoroutine(movecam());
-        
-
+        dissolver.dissolvemat = MeshToCut.GetComponent<MeshRenderer>().material;
+        //destroy mesh when dissolve finishes
+        dissolver.StartDissolve(MeshToCut.GetComponent<MeshRenderer>().sharedMaterial, () => { DestroyHulls();});
+        SliceAimRenderer.enabled = false;
+        MeshToCut.SetActive(false);
+        enabled = false;
+        //_player.WalkInDir(NextDoor.transform.position, PlayerMoveDir);
+        //StartCoroutine(movecam());
+        foreach (Transform child in HullParent)
+        {
+            if(child.gameObject.activeSelf)
+            {
+                if (!particlePool) return;
+                particlePool.RetrieveParticle(child);
+                //ParticleSystem particle = child.gameObject.AddComponent<ParticleSystem>();
+                
+                //ParticleSystemRenderer particleSystemRenderer = particle.GetComponent<ParticleSystemRenderer>();
+                //particleSystemRenderer.material = ParticleMat;
+                //var sh = particle.shape;
+                //sh.shapeType = ParticleSystemShapeType.MeshRenderer;
+                //sh.meshRenderer = child.GetComponent<MeshRenderer>();
+                //sh.useMeshColors = false;
+                //ParticleSystem.MainModule main = particle.main;
+                //main.simulationSpace = ParticleSystemSimulationSpace.World;
+                //particle.Stop();
+                //ParticleSystem.EmissionModule emission = particle.emission;
+                //emission.rateOverTime = 40;
+                //main.startRotation3D = true;
+                //main.startLifetime = .5f;
+                //main.duration = 1;
+                //main.startDelay = 1;
+                //main.startSpeed = 0;
+                //particle.Play();
+            }
+            else
+            {
+                Destroy(child.gameObject);
+            }
+        }
+        //GetComponent<bullet>().enabled = true;
         
     }
+
+    void DestroyHulls()
+    {
+        print("destroying hulls");
+        foreach (Transform child in HullParent)
+        {
+            Destroy(child.gameObject);
+
+        }
+    }
+        
+
+    void AddParticles()
+    {
+
+    }
+
 
     IEnumerator movecam()
     {
@@ -238,29 +348,33 @@ public class Slicer : MonoBehaviour
 
     bool CreateDissolvingHulls(GameObject obj)
     {
-        //print("attempting to create hulls for " + obj);
-        EzySlice.Plane newplane = new EzySlice.Plane(transform.forward, transform.right, transform.forward * -1) ;
-        
-        GameObject[] hulls = SlicerExtensions.SliceInstantiate(obj, newplane);
+        print("attempting to create hulls for " + obj);
+        EzySlice.Plane newplane = new EzySlice.Plane(obj.transform.position, Quaternion.AngleAxis(MouseAngle, Vector3.forward) * Vector3.up);
+
+        //GameObject[] hulls = SlicerExtensions.SliceInstantiate(obj, newplane);
+        GameObject[] hulls = SlicerExtensions.SliceInstantiate(obj, obj.transform.position, Quaternion.AngleAxis(MouseAngle, Vector3.forward) * Vector3.up);
 
         if (hulls != null)
         {
             foreach (GameObject go in hulls)
             {
-                go.transform.position = transform.position;
+                go.transform.position = HullParent.position;
+                go.transform.rotation = obj.transform.rotation;
+                go.transform.parent = HullParent;
                 Rigidbody rb = go.AddComponent<BoxCollider>().gameObject.AddComponent<Rigidbody>();
-                dissolver.GetDissolveMat(rb.gameObject.GetComponent<MeshRenderer>());
+                //dissolver.GetDissolveMat(rb.gameObject.GetComponent<MeshRenderer>());
                 
-                rb.gameObject.GetComponent<MeshRenderer>().material = MeshToCut.GetComponent<MeshRenderer>().material;
+                rb.gameObject.GetComponent<MeshRenderer>().sortingOrder = 11;
 
 
                 Vector3 centerdirection = Camera.main.transform.position - rb.transform.position;
                 //rb1.AddForce(centerdirection);
                 //rb1.AddTorque(centerdirection);
-                rb.AddExplosionForce(1, Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 5), 0), 1, 0, ForceMode.Impulse);
+                rb.AddExplosionForce(15, Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 5), 0), 1, 0, ForceMode.Impulse);
                 //print("half screen is " + Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 5), 0));
                 rb.useGravity = false;
-                rb.AddTorque(centerdirection);
+                rb.AddTorque(centerdirection * HullRotationStrength);
+                //rb.angularVelocity = UnityEngine.Random.insideUnitSphere * HullRotationStrength;
             }
             return true;
         }
@@ -282,13 +396,14 @@ public class Slicer : MonoBehaviour
         //Time.timeScale = 1;
         //canSlice = false;
         //dissolver.dissolvemat = MeshToCut.GetComponent<MeshRenderer>().sharedMaterial; ;
-        dissolver.StartDissolve();
+        //dissolver.StartDissolve(DisMat);
 
 
         gameObject.SetActive(false);
 
         yield return null;
     }
+
 
 
 
@@ -315,4 +430,14 @@ public class Slicer : MonoBehaviour
 
 #endif
 
+}
+
+
+public interface ISliceTextureRetriever
+{
+    Texture2D RetrieveTex { get; }
+    Action OnCapture
+    {
+        set;
+    }
 }

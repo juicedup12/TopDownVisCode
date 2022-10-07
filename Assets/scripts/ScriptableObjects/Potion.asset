@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ItemSprite: {fileID: 21300000, guid: 524bd90d37bb94b45a517d0e92328542, type: 3}
   TypeOfItem: 2
-  ItemPrefab: {fileID: 0}
+  ItemPrefab: {fileID: 235471562184712195, guid: f8d67e3f70907554098504e3bd6b5913,
+    type: 3}
   spawnType: 0
   ItemAnim: {fileID: 0}
   ItemToAdd:

@@ -1,0 +1,32 @@
+﻿title: Start
+tags:
+position: -144,-51
+---
+we are in the hello /node
+where to?
+-> node 1
+    mario: letsa go
+    <<jump Node1>>
+->  node2
+    node 2
+    <<jump Node2>>
+
+===
+title: Node1
+position: -339,241
+---
+we in node 1
+<<jump End>>
+===
+title: Node2
+position: 155,189
+---
+we node 2
+<<jump End>>
+===
+
+title: End
+position: -84,401
+---
+ending
+===

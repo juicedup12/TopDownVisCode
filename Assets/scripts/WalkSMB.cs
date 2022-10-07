@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.Animations;
+using System;
 
 namespace topdown
 {
     public class WalkSMB : SceneLinkedSMB<player>
     {
+        public static event Action OnWalk;
+        public static event Action OnBusy;
 
         public override void OnSLStatePostEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
         {
@@ -12,6 +15,9 @@ namespace topdown
             //m_MonoBehaviour.EnableHurtBox();
             m_MonoBehaviour.canmove = true;
             m_MonoBehaviour.DoStamRegain(true);
+            if (OnWalk != null)
+                OnWalk();
+            else Debug.Log("no walk action");
         }
         
 
@@ -20,6 +26,8 @@ namespace topdown
             if (!m_MonoBehaviour.InDialogue )
             {
                 m_MonoBehaviour.MovementInput();
+                m_MonoBehaviour.MoveLookAhead();
+
 
                 //check for mouse down
                 if (m_MonoBehaviour.Attacking)
@@ -57,6 +65,15 @@ namespace topdown
             }
         }
 
-        
+        public override void OnSLStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            base.OnSLStateExit(animator, stateInfo, layerIndex);
+            if(OnBusy != null)
+            {
+                OnBusy();
+            }
+        }
+
+
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
+//delete
 public class MaterialEffect : MonoBehaviour
 {
 

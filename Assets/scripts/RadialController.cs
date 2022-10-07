@@ -74,6 +74,7 @@ public class RadialController : MonoBehaviour
                 //show 2 radial buttons, assign 2 items
                 break;
             
+                //need to finish the rest
             default:
                 break;
         }

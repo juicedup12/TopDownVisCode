@@ -11,7 +11,8 @@
                     "id": "dcd05624-d70e-4933-94d4-24edb099900c",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Accept",
@@ -19,7 +20,8 @@
                     "id": "e2d57ddb-1230-4f00-a2dd-26b9b9f92105",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Look",
@@ -27,7 +29,8 @@
                     "id": "e633086f-8c57-4efc-b9f9-ef33015c4deb",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Attack",
@@ -35,7 +38,8 @@
                     "id": "9f6f0cbd-1546-4bc1-98c3-caaa1fa6391c",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=2)"
+                    "interactions": "Hold(duration=1),Press(behavior=1)",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Dash",
@@ -43,7 +47,8 @@
                     "id": "80c1ca2e-c422-47e6-b3ca-1346f6c351c1",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=1)"
+                    "interactions": "Press(behavior=1)",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "MouseLook",
@@ -51,7 +56,8 @@
                     "id": "26f11cd3-a6bf-4d9c-b9af-2fb7699c7dde",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "SlowMo",
@@ -59,7 +65,8 @@
                     "id": "cd8c07fc-eb14-4486-95a8-0906d9f6bdc3",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "OpenInventory",
@@ -67,7 +74,8 @@
                     "id": "3d419203-daa4-49c7-89cb-162cef133823",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "MoveInventoryLeft",
@@ -75,7 +83,8 @@
                     "id": "45e95227-faab-49dd-b6a0-cd96f56982fd",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=1)"
+                    "interactions": "Press(behavior=1)",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "MoveInventoryRight",
@@ -83,7 +92,8 @@
                     "id": "97526099-d7dc-49e9-8ae8-4d830818b624",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=1)"
+                    "interactions": "Press(behavior=1)",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "AttackRelease",
@@ -91,7 +101,8 @@
                     "id": "3095f6db-6a5a-4f2e-bd8a-608066c2f3cd",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=1)"
+                    "interactions": "Press(behavior=1)",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Pause",
@@ -99,7 +110,8 @@
                     "id": "d4f1d09a-c8bf-4ab6-8843-946daf1293cf",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=1)"
+                    "interactions": "Press(behavior=1)",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Parry",
@@ -107,7 +119,8 @@
                     "id": "3994cde1-53ed-46cf-8402-4038a311566d",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press"
+                    "interactions": "Press",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -365,7 +378,8 @@
                     "id": "71aa51fb-2a0c-4826-b06c-1a0b6004df77",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Accept",
@@ -373,7 +387,8 @@
                     "id": "22e65a8f-a949-4822-9481-2fe06acab130",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "PointMouse",
@@ -381,7 +396,8 @@
                     "id": "a8bd2811-1750-4107-b6f1-ede362c749e7",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -480,6 +496,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "UI",
+                    "action": "Accept",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9d667d2b-16b7-41f8-bdcc-2e1c32863c15",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Player",
                     "action": "Accept",
                     "isComposite": false,
                     "isPartOfComposite": false
