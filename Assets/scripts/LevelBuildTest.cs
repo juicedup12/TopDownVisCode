@@ -16,7 +16,7 @@ namespace topdown
             roomActivator.SetDoorDir = DoorDirection.up;
             roomActivator.SetDestination(RoomToActivate);
             roomActivator.ActivateCurrentRoom();
-            //test comment for git
+            //test comment for github
         }
     }
 }
