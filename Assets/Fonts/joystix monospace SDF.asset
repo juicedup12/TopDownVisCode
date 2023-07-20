@@ -44,10 +44,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Ambient: 1
+    - _Ambient: 0
     - _Bevel: 1
-    - _BevelClamp: -0
-    - _BevelOffset: 0.16
+    - _BevelClamp: 0
+    - _BevelOffset: 0.185
     - _BevelRoundness: 1
     - _BevelWidth: 0.5
     - _BumpFace: 0
@@ -55,7 +55,7 @@ Material:
     - _ColorMask: 15
     - _Cull: 2
     - _Cutoff: 0.333
-    - _Diffuse: 0
+    - _Diffuse: 0.039
     - _DiffusePower: 1
     - _FaceDilate: -1
     - _FaceShininess: 0
@@ -66,7 +66,7 @@ Material:
     - _GlowOuter: 1
     - _GlowPower: 1
     - _GradientScale: 10
-    - _LightAngle: 3.21
+    - _LightAngle: 4.34
     - _MaskSoftnessX: 0
     - _MaskSoftnessY: 0
     - _OutlineShininess: 0
@@ -76,7 +76,7 @@ Material:
     - _OutlineWidth: 0
     - _Padding: 0
     - _PerspectiveFilter: 0.875
-    - _Reflectivity: 10.8
+    - _Reflectivity: 15
     - _ScaleRatioA: 0.9
     - _ScaleRatioB: 1.1820652
     - _ScaleRatioC: 0.80357146
@@ -84,7 +84,7 @@ Material:
     - _ScaleY: 1
     - _ShaderFlags: 1
     - _Sharpness: 0
-    - _SpecularPower: 2
+    - _SpecularPower: 1.41
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
@@ -114,7 +114,7 @@ Material:
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0, g: 0, b: 0, a: 1}
-    - _SpecularColor: {r: 0.9433962, g: 0.07564971, b: 0.56912833, a: 1}
+    - _SpecularColor: {r: 32.41379, g: 2.5554442, b: 19.502073, a: 1}
     - _UnderlayColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -130,7 +130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hashCode: 943826844
   material: {fileID: -1311356912427664511}
-  materialHashCode: 624732717
+  materialHashCode: 924123324
   m_Version: 1.1.0
   m_SourceFontFileGUID: deb76996260b17c4e885b6df23a66a0f
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: deb76996260b17c4e885b6df23a66a0f,
@@ -138,6 +138,7 @@ MonoBehaviour:
   m_SourceFontFile: {fileID: 12800000, guid: deb76996260b17c4e885b6df23a66a0f, type: 3}
   m_AtlasPopulationMode: 1
   m_FaceInfo:
+    m_FaceIndex: 0
     m_FamilyName: Joystix
     m_StyleName: Monospace
     m_PointSize: 64
@@ -1562,6 +1563,8 @@ MonoBehaviour:
   m_AtlasTextures:
   - {fileID: 1338775341005081812}
   m_AtlasTextureIndex: 0
+  m_IsMultiAtlasTexturesEnabled: 0
+  m_ClearDynamicDataOnBuild: 0
   m_UsedGlyphRects:
   - m_X: 0
     m_Y: 0
@@ -2019,6 +2022,7 @@ Texture2D:
   m_MipCount: 1
   m_IsReadable: 1
   m_IgnoreMasterTextureLimit: 0
+  m_IsPreProcessed: 0
   m_StreamingMipmaps: 0
   m_StreamingMipmapsPriority: 0
   m_AlphaIsTransparency: 0

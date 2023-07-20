@@ -18,6 +18,7 @@ namespace topdown
         public ParallaxManager ParMan;
         public RectangleShaderActivate BuildingShader;
         public CameraController camController;
+        //starting and dest are the game objects shown in 3D scene
         public Transform Starting, Dest;
         public Transform BackDrop;
         public player PlayerTransform;
@@ -97,7 +98,7 @@ namespace topdown
                 ShowLevelIndicator(FromGrid, Starting);
                 ShowLevelIndicator(ToGrid, Dest);
                 BackDrop.position = new Vector3(Dest.position.x, Dest.position.y, BackDrop.position.z);
-                PlayerTransform.WalkInDir(BackDrop.position, dir);
+                PlayerTransform.SetPosAndWalkDir(BackDrop.position, dir);
                 //PlayerTransform.transform.position = BackDrop.position;
             };
         }

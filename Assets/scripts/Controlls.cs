@@ -39,7 +39,7 @@ namespace topdown
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Accept"",
+                    ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""e2d57ddb-1230-4f00-a2dd-26b9b9f92105"",
                     ""expectedControlType"": ""Button"",
@@ -221,7 +221,7 @@ namespace topdown
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": ""Player"",
-                    ""action"": ""Accept"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -232,7 +232,7 @@ namespace topdown
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": ""Player"",
-                    ""action"": ""Accept"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -565,7 +565,7 @@ namespace topdown
             // Player
             m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
             m_Player_Walking = m_Player.FindAction("Walking", throwIfNotFound: true);
-            m_Player_Accept = m_Player.FindAction("Accept", throwIfNotFound: true);
+            m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
             m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
             m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
             m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
@@ -642,7 +642,7 @@ namespace topdown
         private readonly InputActionMap m_Player;
         private IPlayerActions m_PlayerActionsCallbackInterface;
         private readonly InputAction m_Player_Walking;
-        private readonly InputAction m_Player_Accept;
+        private readonly InputAction m_Player_Interact;
         private readonly InputAction m_Player_Look;
         private readonly InputAction m_Player_Attack;
         private readonly InputAction m_Player_Dash;
@@ -659,7 +659,7 @@ namespace topdown
             private @Controlls m_Wrapper;
             public PlayerActions(@Controlls wrapper) { m_Wrapper = wrapper; }
             public InputAction @Walking => m_Wrapper.m_Player_Walking;
-            public InputAction @Accept => m_Wrapper.m_Player_Accept;
+            public InputAction @Interact => m_Wrapper.m_Player_Interact;
             public InputAction @Look => m_Wrapper.m_Player_Look;
             public InputAction @Attack => m_Wrapper.m_Player_Attack;
             public InputAction @Dash => m_Wrapper.m_Player_Dash;
@@ -683,9 +683,9 @@ namespace topdown
                     @Walking.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalking;
                     @Walking.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalking;
                     @Walking.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWalking;
-                    @Accept.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAccept;
-                    @Accept.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAccept;
-                    @Accept.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAccept;
+                    @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                    @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                    @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                     @Look.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                     @Look.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                     @Look.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
@@ -726,9 +726,9 @@ namespace topdown
                     @Walking.started += instance.OnWalking;
                     @Walking.performed += instance.OnWalking;
                     @Walking.canceled += instance.OnWalking;
-                    @Accept.started += instance.OnAccept;
-                    @Accept.performed += instance.OnAccept;
-                    @Accept.canceled += instance.OnAccept;
+                    @Interact.started += instance.OnInteract;
+                    @Interact.performed += instance.OnInteract;
+                    @Interact.canceled += instance.OnInteract;
                     @Look.started += instance.OnLook;
                     @Look.performed += instance.OnLook;
                     @Look.canceled += instance.OnLook;
@@ -836,7 +836,7 @@ namespace topdown
         public interface IPlayerActions
         {
             void OnWalking(InputAction.CallbackContext context);
-            void OnAccept(InputAction.CallbackContext context);
+            void OnInteract(InputAction.CallbackContext context);
             void OnLook(InputAction.CallbackContext context);
             void OnAttack(InputAction.CallbackContext context);
             void OnDash(InputAction.CallbackContext context);

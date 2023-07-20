@@ -14,17 +14,6 @@ public class ScreenEffect : MonoBehaviour
     Texture texture;
     
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //TintMat = LeftImg.GetComponent<RawImage>().material;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     bool IncreaseOpacity()
     {
         if (opacity > 1 && opacity < 1.1)

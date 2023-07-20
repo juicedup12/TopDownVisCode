@@ -9,6 +9,8 @@ namespace topdown
         public float gridoffset;
         public GameObject roombase, BossRoom;
         public Transform shop;
+        [SerializeField] Transform LevelPivot;
+        [SerializeField] Vector3 LevelPivotOffset;
         enum LevelTile { empty, floor };
         LevelTile[,] grid;
         //RoomPrefabs with same index positions as grid
@@ -723,7 +725,7 @@ namespace topdown
         {
             Setup();
             CreateFloors();
-            roomGrid[5, 0].transform.position = Vector3.zero;
+            roomGrid[5, 0].transform.position = LevelPivot.position + LevelPivotOffset;
             roomGrid[5, 0].gameObject.SetActive(true);
         }
 

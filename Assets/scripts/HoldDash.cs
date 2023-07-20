@@ -20,11 +20,11 @@ namespace topdown
 
 
             //if button is let go then go to dashatk
-            if(!m_MonoBehaviour.Dashing)
-            {
-                m_MonoBehaviour.activatetrail();
-                animator.SetTrigger("dashatk");
-            }
+            //if(!m_MonoBehaviour.Dashing)
+            //{
+            //    m_MonoBehaviour.activatetrail();
+            //    animator.SetTrigger("dashatk");
+            //}
         }
 
         public override void OnSLStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)

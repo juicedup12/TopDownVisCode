@@ -146,7 +146,7 @@ public class CustomLineBrush : GridBrush
         //Debug.Log("angle from " + p1 + " to " + " p2 " + p2 + " is " + angle);
         if (Mathf.Abs(angle) < 30)
         {
-            for (int i = 0; i < dir.x; i++)
+            for (int i = 0; i <= dir.x; i++)
             {
                 //points[i] = p1 + new Vector2Int(i, 0);
                 if (FitsTile(i))
@@ -160,7 +160,7 @@ public class CustomLineBrush : GridBrush
         if (Mathf.Abs(angle) > 135)
         {
 
-            for (int i = 0; i < -dir.x; i++)
+            for (int i = 0; i <= -dir.x; i++)
             {
                 if (FitsTile(i))
                 {
@@ -172,7 +172,7 @@ public class CustomLineBrush : GridBrush
         }
         if (angle > 30 && angle < 135)
         {
-            for (int i = 0; i < dir.y; i++)
+            for (int i = 0; i <= dir.y; i++)
             {
                 if (FitsTile(i))
                 {
@@ -184,7 +184,7 @@ public class CustomLineBrush : GridBrush
         }
         if (angle < -30 && angle > -135)
         {
-            for (int i = 0; i < -dir.y; i++)
+            for (int i = 0; i <= -dir.y; i++)
             {
                 if (FitsTile(i))
                 {

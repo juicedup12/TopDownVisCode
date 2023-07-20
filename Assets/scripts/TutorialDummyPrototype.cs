@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Cinemachine;
 
 namespace topdown
 {
@@ -32,8 +33,9 @@ namespace topdown
 
         public override void Break()
         {
-            
-            HitEffectManager.instance.ShakeCamera(2, .1f);
+
+            //HitEffectManager.instance.ShakeCamera(2, .1f);
+            GetComponent<CinemachineImpulseSource>().GenerateImpulse();
             print("prototype break");
             //instantiate big piece
 

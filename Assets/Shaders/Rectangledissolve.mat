@@ -29,10 +29,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Noise_Strength: -0.38
+    - Noise_Strength: -0.85
     - Vector1_11CE806E: 9.97
     - Vector1_40A625B: 10.4
-    - Vector1_4904AB79: 0.24
+    - Vector1_4904AB79: 0.783
     - Vector1_71456495: 32
     - Vector1_8C3A14C8: 73
     - Vector1_941C095F: 1

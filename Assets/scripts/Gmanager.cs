@@ -59,7 +59,7 @@ namespace topdown
                 Transform BottomEntrance = TestingRoom.transform.GetChild(11);
                 BottomEntrance.gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 
-                _player.WalkInDir(BottomEntrance.position, Vector2.up);
+                _player.SetPosAndWalkDir(BottomEntrance.position, Vector2.up);
                 //TransferCam(TestingRoom);
                 CameraManager.instance.TransferCam(TestingRoom);
                 StartDissolve(TestingRoom.transform.position);
@@ -128,7 +128,7 @@ namespace topdown
 
                             //there probably shouldn't be two calls to player
                             
-                            _player.WalkInDir(BottomEntrance.position, Vector2.up);
+                            _player.SetPosAndWalkDir(BottomEntrance.position, Vector2.up);
                             //********************************************************
 
                             //TransferCam(room);

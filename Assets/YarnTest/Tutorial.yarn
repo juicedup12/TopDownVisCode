@@ -1,19 +1,41 @@
 ﻿title: Start
+position: -215,-235
 ---
+<<set $Finished to false>>
+<<SpeechBubble TutorialNPC>>
 come talk to me
+===
+
+title: Interact
+position: -111,27
+---
+<<Textbox>>
+<<if $Finished is true>>
+<<jump TutEnd>>
+<<endif>>
 Do you want to Start the tutorial?
 ->yes
     break dummies
-    <<invoke>>
-    <<jump TutStart>>
+    press left mouse to attack
+    <<Action TutorialNPC>>
 ->no
     more dialogue
-
-go
+    go away then
+<<PlayerControl>>
 ===
-title: TutStart
+title: TutEnd
+position: 89,181
 ---
-press left mouse to attack
-One left
 Wow you can think!
+//add scene change
+===
+title: TutBubble
+position: -37,-161
+---
+<<SpeechBubble TutorialNPC>>
+<<if $FinishTime < 4>>
+you're fast
+<<else>>
+you're slow
+<<endif>>
 ===

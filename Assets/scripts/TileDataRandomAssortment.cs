@@ -5,12 +5,12 @@ using UnityEngine;
 //holds an array of tile containers 
 //can retrieve a random tiletransform array
 [CreateAssetMenu(fileName = "TPlacementRandomDataContainer", menuName = "ScriptableObjects/TileRandomContainerSO", order = 1)]
-
 public class TileDataRandomAssortment : TileDataHandlerSO
 {
     [SerializeField]
     TileContainer[] TileDataContainers;
     [SerializeField] int TContainerRegisterIndex;
+    //I don't think selectedrandomtransforms is needed
     private TileContainer.TileTransform[] SelectedRandomTransforms;
     public override TileContainer.TileTransform[] GetTileTransforms => GetRandomTileTransform();
 
@@ -27,6 +27,7 @@ public class TileDataRandomAssortment : TileDataHandlerSO
         SelectedRandomTransforms = GetRandomTileTransform();
     }
 
+    //sets tile coordinates and rotation to data container array based on register index
     public override void SetTileData(Vector3Int tilepos, float angle = 0)
     {
         base.SetTileData(tilepos, angle);

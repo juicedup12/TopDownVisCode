@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Accept",
+                    "name": "Interact",
                     "type": "Button",
                     "id": "e2d57ddb-1230-4f00-a2dd-26b9b9f92105",
                     "expectedControlType": "Button",
@@ -197,7 +197,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "Player",
-                    "action": "Accept",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -208,7 +208,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "Player",
-                    "action": "Accept",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

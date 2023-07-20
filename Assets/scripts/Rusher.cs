@@ -220,7 +220,9 @@ namespace topdown
                     print("rusher attack collided with " + collision.name);
 
                     Debug.Log("doing damage to player", gameObject);
-                    Gmanager.instance._player.TakeDamage(transform.position);
+                    //Gmanager.instance._player.TakeDamage(transform.position);
+                    if(player)
+                    player.TakeDamage(transform.position);
                 }
             }
         }

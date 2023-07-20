@@ -21,6 +21,7 @@ public class StaminaController : MonoBehaviour
 
     public void SetFillAmount(float value)
     {
+        if(ImageFill)
         ImageFill.fillAmount = value;
     }
 

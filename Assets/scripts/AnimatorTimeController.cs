@@ -4,23 +4,24 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Animations;
 
+//a replacement for the animator controller controller component
 public class AnimatorTimeController : MonoBehaviour
 {
 
     public AnimationClip clip;
 
-    public float time;
 
     PlayableGraph playableGraph;
 
     AnimationClipPlayable playableClip;
 
+
     void Start()
 
     {
 
-        playableGraph = PlayableGraph.Create();
 
+        playableGraph = PlayableGraph.Create();
         var playableOutput = AnimationPlayableOutput.Create(playableGraph, "Animation", GetComponent<Animator>());
 
         // Wrap the clip in a playable
@@ -41,15 +42,13 @@ public class AnimatorTimeController : MonoBehaviour
 
     }
 
-    void Update()
 
+
+    // Control the time manually
+    public void SetTime(double time)
     {
-
-        // Control the time manually
-        //may need to compare time with clip in order to avoid looping
-
+        if(playableGraph.IsValid())
         playableClip.SetTime(time);
-
     }
 
 
@@ -59,7 +58,7 @@ public class AnimatorTimeController : MonoBehaviour
     {
 
         // Destroys all Playables and Outputs created by the graph.
-
+        if(playableGraph.IsValid())
         playableGraph.Destroy();
 
     }

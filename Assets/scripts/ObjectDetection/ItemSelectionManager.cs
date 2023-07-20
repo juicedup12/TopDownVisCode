@@ -69,8 +69,8 @@ namespace InteractableSelect
 
                 //deselect 
                 //if there's no items detected and there's a current item, then deslect
-                print("object detected: " + _objectDetection.Check());
-                print("current selection :" + CurrentSelection);
+                //print("object detected: " + _objectDetection.Check());
+                //print("current selection :" + CurrentSelection);
                 if (!_objectDetection.Check() && CurrentSelection != null)
                 {
                     _selectionResponder.OnDeselect();

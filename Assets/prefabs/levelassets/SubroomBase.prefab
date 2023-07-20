@@ -175,7 +175,7 @@ PrefabInstance:
     - target: {fileID: 621545547003361607, guid: 7233c40119eb860408784e348ab8a5c4,
         type: 3}
       propertyPath: m_InstanceId
-      value: -476996
+      value: -285704
       objectReference: {fileID: 0}
     - target: {fileID: 4348143165497653729, guid: 7233c40119eb860408784e348ab8a5c4,
         type: 3}
@@ -254,15 +254,35 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1477608863660470889}
     m_Modifications:
+    - target: {fileID: 1003543094428310557, guid: 4307c84a3a228a6469f74757dfa3c8ed,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1003543094428310557, guid: 4307c84a3a228a6469f74757dfa3c8ed,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3989061875928522951, guid: 4307c84a3a228a6469f74757dfa3c8ed,
         type: 3}
       propertyPath: m_Name
       value: WallWithDoor
       objectReference: {fileID: 0}
+    - target: {fileID: 4233583404915313929, guid: 4307c84a3a228a6469f74757dfa3c8ed,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4233583404915313929, guid: 4307c84a3a228a6469f74757dfa3c8ed,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4335571253315551263, guid: 4307c84a3a228a6469f74757dfa3c8ed,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.03
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4335571253315551263, guid: 4307c84a3a228a6469f74757dfa3c8ed,
         type: 3}
@@ -329,6 +349,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4942262865697602911, guid: 4307c84a3a228a6469f74757dfa3c8ed,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4942262865697602911, guid: 4307c84a3a228a6469f74757dfa3c8ed,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5452655736113404296, guid: 4307c84a3a228a6469f74757dfa3c8ed,
         type: 3}
       propertyPath: m_Mesh
@@ -337,7 +367,7 @@ PrefabInstance:
     - target: {fileID: 5452655736113404296, guid: 4307c84a3a228a6469f74757dfa3c8ed,
         type: 3}
       propertyPath: m_InstanceId
-      value: -477036
+      value: -285752
       objectReference: {fileID: 0}
     - target: {fileID: 6767252391440971294, guid: 4307c84a3a228a6469f74757dfa3c8ed,
         type: 3}
@@ -347,12 +377,42 @@ PrefabInstance:
     - target: {fileID: 6767252391440971294, guid: 4307c84a3a228a6469f74757dfa3c8ed,
         type: 3}
       propertyPath: m_InstanceId
-      value: -477042
+      value: -285758
+      objectReference: {fileID: 0}
+    - target: {fileID: 8056111029900978370, guid: 4307c84a3a228a6469f74757dfa3c8ed,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8056111029900978370, guid: 4307c84a3a228a6469f74757dfa3c8ed,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8056111029900978370, guid: 4307c84a3a228a6469f74757dfa3c8ed,
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163467733662308841, guid: 4307c84a3a228a6469f74757dfa3c8ed,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163467733662308841, guid: 4307c84a3a228a6469f74757dfa3c8ed,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163467733662308841, guid: 4307c84a3a228a6469f74757dfa3c8ed,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163467733662308841, guid: 4307c84a3a228a6469f74757dfa3c8ed,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: -368230027
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4307c84a3a228a6469f74757dfa3c8ed, type: 3}

@@ -134,6 +134,7 @@ public class Room
         else
         {
             roombase.transform.localScale = new Vector3(roombase.transform.localScale.x, roombase.transform.localScale.y * -1);
+            HoriwallDoorRef.RoomOnTopRow();
         }
         //endwall = new Vector2(randomnode, gridworldsize.y);
         if (!enclosingleft)

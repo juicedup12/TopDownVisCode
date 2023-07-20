@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Yarn.Unity;
 using TMPro;
 
-public class TutorialTimer : MonoBehaviour
+public class TutorialObjective : MonoBehaviour
 {
     float time;
     [SerializeField]
     TextMeshProUGUI TextMesh;
     [SerializeField] int TrackedObjects;
+    [SerializeField] InMemoryVariableStorage YarnVariables;
+    [SerializeField] DialogueRunnerController runnerController;
 
     // Start is called before the first frame update
     void Start()
@@ -38,8 +41,16 @@ public class TutorialTimer : MonoBehaviour
         print("tracked object removed, remaining : " + TrackedObjects);
         if (TrackedObjects < 1)
         {
-            gameObject.SetActive(false);
+            ObjectsCleared();
         }
+    }
+
+    void ObjectsCleared()
+    {
+        YarnVariables.SetValue("$Finished", true);
+        YarnVariables.SetValue("$FinishTime", time);
+        runnerController.StartDialogue("TutBubble");
+        gameObject.SetActive(false);
     }
 
 }

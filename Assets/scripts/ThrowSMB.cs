@@ -9,7 +9,7 @@ public class ThrowSMB : SceneLinkedSMB<player>
         base.OnSLStateEnter(animator, stateInfo, layerIndex);
         Debug.Log("entering throw smb");
         animator.speed = 0;
-        m_MonoBehaviour.ReleaseAttack = false;
+        //m_MonoBehaviour.ReleaseAttack = false;
     }
 
     public override void OnSLStateNoTransitionUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -21,11 +21,11 @@ public class ThrowSMB : SceneLinkedSMB<player>
         m_MonoBehaviour.AimThrow();
 
 
-        if(m_MonoBehaviour.ReleaseAttack)
-        {
-            animator.speed = 1;
-            Debug.Log("released attack");
-        }
+        //if(m_MonoBehaviour.ReleaseAttack)
+        //{
+        //    animator.speed = 1;
+        //    Debug.Log("released attack");
+        //}
     }
 
 

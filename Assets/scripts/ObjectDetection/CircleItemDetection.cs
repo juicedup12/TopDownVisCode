@@ -69,7 +69,7 @@ namespace InteractableSelect
             }
             else if (itemTransforms.Count == 1)
             {
-                print("Get selection: " + itemTransforms[0]);
+                //print("Get selection: " + itemTransforms[0]);
                 return itemTransforms[0];
             }
             return null;

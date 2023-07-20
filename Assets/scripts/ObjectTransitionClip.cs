@@ -5,7 +5,7 @@ using UnityEngine.Playables;
 
 public class ObjectTransitionClip : PlayableAsset
 {
-    public TileGroupTransition transitioner;
+    public GroupTransition transitioner;
     public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
     {
         var playable = ScriptPlayable<ObjectTransitionBehavior>.Create(graph);
@@ -17,9 +17,9 @@ public class ObjectTransitionClip : PlayableAsset
 
         for (int i = 0; i < graph.GetOutputCount(); i++)
         {
-            transitioner = graph.GetOutput(i).GetUserData() as TileGroupTransition;
+            transitioner = graph.GetOutput(i).GetUserData() as GroupTransition;
         }
-        Debug.Log(transitioner ? "length is " + transitioner.TileLength : "no transtioner");
+        //Debug.Log(transitioner ? "length is " + transitioner.TileLength : "no transtioner");
         return playable;
 
     }

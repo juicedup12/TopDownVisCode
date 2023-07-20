@@ -4,19 +4,14 @@ using UnityEngine;
 using UnityEngine.Timeline;
 using UnityEngine.Playables;
 
-public class PlayerNotificationMarker :  Marker, INotification
+namespace topdown
 {
-    public PropertyName id { get; }
-
-    // Start is called before the first frame update
-    void Start()
+    public class PlayerNotificationMarker : Marker, INotification
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public PropertyName id { get; }
+        /// <summary>
+        /// set to true if the player is in control, else set to false
+        /// </summary>
+        [SerializeField] bool SetPlayerActive;
     }
 }

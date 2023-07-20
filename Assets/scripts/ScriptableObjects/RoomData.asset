@@ -30,3 +30,5 @@ MonoBehaviour:
   - {fileID: 841764019275767955, guid: 1b765b97176d6f84592ce1f56f282a9d, type: 3}
   - {fileID: 983431649552241062, guid: f6f59a461ccc79542b562674bc7e69ef, type: 3}
   - {fileID: 2954567188207523302, guid: 6e296b15a38972d4b80d595e4a774770, type: 3}
+  enemies:
+  - {fileID: 3789863192541420301, guid: a7353ecd0f44f7f41be647f62de3e9d4, type: 3}

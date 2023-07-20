@@ -1,0 +1,850 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13952a46854d55440934a2edc69dd57a, type: 3}
+  m_Name: RandomRoomGenTiles
+  m_EditorClassIdentifier: 
+  TileDataContainers:
+  - TileTransforms:
+    - TilePos: {x: -6, y: 3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: 2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: 1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: 0, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: -1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: -2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: -3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: -4, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: -4, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: -4, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: -4, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: -4, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: -4, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: -4, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: -4, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: -4, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: -4, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: -4, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: -4, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: -3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: -2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: -1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: 0, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: 1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: 2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: 2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: 1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: 0, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: -1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: -2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: -3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: -3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: -2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: -1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: 0, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: 1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: 2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: 2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: 1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: 0, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: -1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: -2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: -3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: -3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: -2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: -1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: 0, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: 1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: 2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: 2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: 1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: 0, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: -1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: -2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: -3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: -3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: -2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: -1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: 0, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: 1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: 2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: 2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: 1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: 0, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: -1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: -2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: -3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: -3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: -2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: -1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: 0, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: 1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: 2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: 2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: 1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: 0, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: -1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: -2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: -3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: -3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: -2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: -1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: 0, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: 1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: 2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+  - TileTransforms:
+    - TilePos: {x: 5, y: -4, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: -3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: -2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: -1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: 0, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: 1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: 2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: 3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: 3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: 2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: 1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: 0, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: -1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: -2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: -3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: -4, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: -4, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: -3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: -2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: -1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: 0, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: 1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: 2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: 3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: 3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: 2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: 1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: 0, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: -1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: -2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: -3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: -4, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: -4, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: -3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: -2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: -1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: 0, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: 1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: 2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: 3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: 3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: 2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: 1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: 0, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: -1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: -2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: -3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: -4, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: -4, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: -3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: -2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: -1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: 0, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: 1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: 2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: 3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: 3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: 2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: 1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: 0, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: -1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: -2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: -3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: -4, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: -4, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: -3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: -2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: -1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: 0, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: 1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: 2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: 3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: 3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: 2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: 1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: 0, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: -1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: -2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: -3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: -4, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: -4, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: -3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: -2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: -1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: 0, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: 1, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: 2, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: 3, z: 0}
+      TileZAngle: 90
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: 3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: 2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: 1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: 0, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: -1, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: -2, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: -3, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: -4, z: 0}
+      TileZAngle: 270
+      FinishedTransition: 0
+  - TileTransforms:
+    - TilePos: {x: -6, y: 3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: 3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: 3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: 3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: 3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: 3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: 3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: 3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: 3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: 3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: 3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: 3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: 2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: 2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: 2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: 2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: 2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: 2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: 2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: 2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: 2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: 2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: 2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: 2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: 1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: 1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: 1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: 1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: 1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: 1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: 1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: 1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: 1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: 1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: 1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: 1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: 0, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: 0, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: 0, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: 0, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: 0, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: 0, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: 0, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: 0, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: 0, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: 0, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: 0, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: 0, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: -1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: -1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: -1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: -1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: -1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: -1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: -1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: -1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: -1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: -1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: -1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: -1, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: -2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: -2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: -2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: -2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: -2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: -2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: -2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: -2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: -2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: -2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: -2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: -2, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: -3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: -3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: -3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: -3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: -3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: -3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: -3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: -3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: -3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: -3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: -3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: -3, z: 0}
+      TileZAngle: 0
+      FinishedTransition: 0
+    - TilePos: {x: 5, y: -4, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 4, y: -4, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 3, y: -4, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 2, y: -4, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 1, y: -4, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: 0, y: -4, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -1, y: -4, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -2, y: -4, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -3, y: -4, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -4, y: -4, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -5, y: -4, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+    - TilePos: {x: -6, y: -4, z: 0}
+      TileZAngle: 180
+      FinishedTransition: 0
+  TContainerRegisterIndex: 1

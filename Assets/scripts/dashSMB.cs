@@ -47,12 +47,13 @@ namespace topdown
 
             }
 
-            if (m_MonoBehaviour.Attacking)
-            {
-                Debug.Log("attacking while dashing");
-                //m_MonoBehaviour.activatetrail();
-                animator.SetTrigger("ATK");
-            }
+            //need to use animator state machine to switch to attacking or a different type of attack
+            //if (m_MonoBehaviour.Attacking)
+            //{
+            //    Debug.Log("attacking while dashing");
+            //    //m_MonoBehaviour.activatetrail();
+            //    animator.SetTrigger("ATK");
+            //}
 
             //for after image stuff
             m_MonoBehaviour.Dashinput();
@@ -71,20 +72,18 @@ namespace topdown
             {
                 m_MonoBehaviour.ReduceStamina(30);
             }
-            m_MonoBehaviour.isdashing = false;
-            m_MonoBehaviour.canmove = true;
-            m_MonoBehaviour.FinishedAction(1);
+            //m_MonoBehaviour.FinishedAction(1);
         }
 
         public override void OnSLTransitionFromStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, AnimatorControllerPlayable controller)
         {
 
 
-            if (m_MonoBehaviour.Attacking)
-            {
-                //Debug.Log("attacking on trasition from state update");
-                animator.SetTrigger("ATK");
-            }
+            //if (m_MonoBehaviour.Attacking)
+            //{
+            //    //Debug.Log("attacking on trasition from state update");
+            //    animator.SetTrigger("ATK");
+            //}
 
             base.OnSLTransitionFromStateUpdate(animator, stateInfo, layerIndex, controller);
             //Debug.Log("transition from state update");

@@ -2,7 +2,7 @@
 using DG.Tweening;
 
 /// <summary>
-/// handles setting size of walls aswell as becoming when player goes behind the wall
+/// handles setting size of walls aswell as becoming transparent when player goes behind the wall
 /// </summary>
 public class wallDoor : MonoBehaviour
 {
@@ -62,7 +62,7 @@ public class wallDoor : MonoBehaviour
             {
                 float RandXPos = Random.Range(transform.position.x - assetWidthOffset, ((transform.position.x - (Mathf.Abs( startToEndDist) / 2 - doorwidth)) + .2f) + assetWidthOffset);
                 //Debug.Log("Right wall getting a random x pos from " + transform.position.x + " and " +( transform.position.x - (startToEndDist / 2 - doorwidth)), this);
-                Vector3 Boardspawn = new Vector3(RandXPos, transform.position.y + .5f);
+                Vector3 Boardspawn = new Vector3(RandXPos, transform.position.y + (transform.up.y * .5f));
 
                 Instantiate(Officeboard, Boardspawn, Quaternion.identity, gameObject.transform).transform.parent = transform;
             }
@@ -129,6 +129,13 @@ public class wallDoor : MonoBehaviour
     {
         sprRndr1.sortingLayerName = SortlayerName;
         sprRndr2.sortingLayerName = SortlayerName;
+    }
+
+    public void RoomOnTopRow()
+    {
+
+        Pivot1.transform.localScale = new Vector3(Pivot1.transform.localScale.x, -1, 1);
+        Pivot2.transform.localScale = new Vector3(Pivot2.transform.localScale.x, -1, 1);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

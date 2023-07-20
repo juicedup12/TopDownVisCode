@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
-using Yarn.Unity.Example;
+using Yarn.Unity;
 
 
 namespace topdown
@@ -60,7 +60,7 @@ namespace topdown
         Vector3 movedir;
         public Vector3 move;
         Vector3 dashvector;
-        Vector2 InputMove { get; set; }
+        public Vector2 InputMove { get; private set; }
         Vector2 InputLook { get; set; }
         Vector2 InputMousePos { get; set; }
         Vector3 lastpointeddir;
@@ -78,9 +78,7 @@ namespace topdown
         public bool PressedAccept { get; private set; }
         bool canbeDamaged = true;
         bool OnMouseControl { get; set; }
-        bool moving;
         public bool OpenInventory;
-        public bool isdashing = false;
         bool hasknife = true;
         bool onledge = false;
         bool enemyledgeatk = false;
@@ -90,11 +88,8 @@ namespace topdown
         public bool SequenceDone;
         public bool restrained = false;
         public bool CloseInventory;
-        public bool ReleaseAttack;
-        public bool Attacking { get; set; }
-        public bool Dashing { get; set; }
+        //public bool ReleaseAttack;
         bool shakeright = false;
-        public bool canmove = true;
         public bool InDialogue;
         public bool TransitioningToLevel = false;
         #endregion
@@ -140,7 +135,6 @@ namespace topdown
         public bool IsUnderledge = false;
         public Transform ledgepos;
         public ledgeinteract ledgeref;
-        PlayerCharacter DialoguePlayer;
         public Transform EnemyLedgeAtk;
         LineRenderer AimLine;
         PlayerInteractable PlayerInteractableTarget;
@@ -151,6 +145,7 @@ namespace topdown
         public event Action ParryAction;
         public event Action AttackAction;
         public event Action DashCompleteAction;
+        Action AcceptAction;
         #endregion
 
         string device;
@@ -167,79 +162,48 @@ namespace topdown
         private void OnEnable()
         {
 
-            InputSystem.onActionChange += (obj, change) =>
-            {
-                if (change == InputActionChange.ActionPerformed)
-                {
-                    var inputAction = (InputAction)obj;
-                    var lastControl = inputAction.activeControl;
-                    var lastDevice = lastControl.device;
+            InputSystem.onActionChange += CheckForInputControlChange;
 
-                    //Debug.Log($"device is gamepad: {lastDevice is Gamepad}");
-
-
-
-                    ControllerType TypeofController = lastDevice is Keyboard || lastDevice is Mouse ? ControllerType.Keyboard : ControllerType.GamePad;
-
-                    //Debug.Log($"device is :{TypeofController.ToString()} ");
-
-                    if (UITextNotificationController.instance != null)
-                    {
-                        UITextNotificationController.instance.CheckControllerChange(TypeofController);
-                    }
-                }
-            };
-
-            //need to fix this line below
-            RoomGen.OnDoor += WalkInDir;
             _inputActions.Enable();
             _inputActions.UI.Disable();
 
-            _inputActions.Player.Accept.started += OnAcceptButton;
+            _inputActions.Player.Interact.performed += OnInteract;
             //_inputActions.Player.Accept.canceled += ctx => PressedAccept = false;
             _inputActions.Player.Walking.performed += onMoveInput;
-            _inputActions.Player.Walking.canceled += ctx => { moving = false; print("stopped movving"); InputMove = Vector2.zero; };
+            _inputActions.Player.Walking.canceled += onMoveInput;
             _inputActions.Player.Look.performed += onLookInput;
-            _inputActions.Player.Look.canceled += ctx => InputLook = Vector2.zero;
-            _inputActions.Player.Attack.performed += ctx => { if (ctx.interaction is HoldInteraction) playeranim.SetTrigger("HoldPunch"); else { playeranim.SetTrigger("ATK"); Attacking = true; } };
-            _inputActions.Player.Attack.canceled += ctx => { Attacking = false; };
-            _inputActions.Player.Dash.started += ctx => { print("tapped dash"); Dashing = true; };
-            _inputActions.Player.Dash.performed += ctx => { Dashing = !ctx.performed; print("dash perforted"); DashPressDuration = (float)ctx.duration; if (ctx.interaction is PressInteraction) { }; };
+            _inputActions.Player.Look.canceled += onLookInput;
+            _inputActions.Player.Attack.performed += AttackInput;
+            _inputActions.Player.Dash.performed += DashInput;
             _inputActions.Player.MouseLook.performed += onmouseLook;
-            _inputActions.Player.OpenInventory.performed += ctx => OpenInventory = true;
-            _inputActions.Player.Parry.performed += ctx => Parry = true;
-            _inputActions.Player.Parry.canceled += ctx => Parry = false;
-            _inputActions.Player.AttackRelease.performed += ctx => { ReleaseAttack = true; };
-            _inputActions.Player.Pause.performed += ctx => PauseUI.instantce.ShowPauseMenu();
+            _inputActions.Player.OpenInventory.performed += InventoryInput;
+            _inputActions.Player.Pause.performed += PauseInput;
             _inputActions.Player.SlowMo.performed += SlowmodeInput;
-            _inputActions.Player.SlowMo.canceled += ctx => { print("canceled slowmo"); postProcessCtrl.SetBlurActive(false); Time.timeScale = 1; };
+            _inputActions.Player.SlowMo.canceled += SlowmodeInput;
+            _inputActions.UI.Accept.performed += UIAcceptInput;
             SceneLinkedSMB<player>.Initialise(playeranim, this);
         }
 
         private void OnDisable()
         {
-            RoomGen.OnDoor += WalkInDir;
+            InputSystem.onActionChange -= CheckForInputControlChange;
+
             _inputActions.Disable();
 
-            _inputActions.Player.Accept.started -= OnAcceptButton;
-            _inputActions.Player.Accept.canceled -= ctx => PressedAccept = false;
+            _inputActions.Player.Interact.performed -= OnInteract;
+            //_inputActions.Player.Accept.canceled += ctx => PressedAccept = false;
             _inputActions.Player.Walking.performed -= onMoveInput;
-            _inputActions.Player.Walking.canceled -= ctx => { moving = false; print("stopped movving"); InputMove = Vector2.zero; };
+            _inputActions.Player.Walking.canceled -= onMoveInput;
             _inputActions.Player.Look.performed -= onLookInput;
-            _inputActions.Player.Look.canceled -= ctx => InputLook = Vector2.zero;
-            _inputActions.Player.Attack.performed -= ctx => Attacking = true;
-            _inputActions.Player.Attack.canceled -= ctx => Attacking = false;
-            _inputActions.Player.Dash.started -= ctx => { print("tapped dash"); Dashing = true; };
-            _inputActions.Player.Dash.performed -= ctx => { Dashing = !ctx.performed; print("dash perforted"); DashPressDuration = (float)ctx.duration; if (ctx.interaction is PressInteraction) { }; };
+            _inputActions.Player.Look.canceled -= onLookInput;
+            _inputActions.Player.Attack.performed -= AttackInput;
+            _inputActions.Player.Dash.performed -= DashInput;
             _inputActions.Player.MouseLook.performed -= onmouseLook;
-            _inputActions.Player.OpenInventory.performed -= ctx => OpenInventory = true;
-            _inputActions.Player.Parry.performed -= ctx => Parry = true;
-            _inputActions.Player.Parry.canceled -= ctx => Parry = false;
-            _inputActions.Player.AttackRelease.performed -= ctx => { ReleaseAttack = true; };
-            _inputActions.Player.Pause.performed -= ctx => PauseUI.instantce.ShowPauseMenu();
+            _inputActions.Player.OpenInventory.performed -= InventoryInput;
+            _inputActions.Player.Pause.performed -= PauseInput;
             _inputActions.Player.SlowMo.performed -= SlowmodeInput;
-            _inputActions.Player.SlowMo.canceled -= ctx => { print("canceled slowmo"); postProcessCtrl.SetBlurActive(false); Time.timeScale = 1; };
-
+            _inputActions.Player.SlowMo.canceled -= SlowmodeInput;
+            _inputActions.UI.Accept.performed -= UIAcceptInput;
 
         }
 
@@ -281,11 +245,6 @@ namespace topdown
                 //healthUI.ChangePlayerHealth(PlayerHealth);
 
             }
-            DialoguePlayer = GetComponent<PlayerCharacter>();
-            if (DialoguePlayer != null)
-            {
-                DialoguePlayer.playerclass = this;
-            }
 
         }
 
@@ -308,27 +267,72 @@ namespace topdown
 
         private void FixedUpdate()
         {
-            if (canmove && moving)
+            if (playeranim.GetCurrentAnimatorStateInfo(0).IsName("WalkTree"))
             {
-                //print("fixed update, movedir is " + move);
+                //print("player in walk tree");
+                if (InputMove.magnitude > 0)
+                {
 
-                rb2d.velocity = InputMove * speed * Time.fixedDeltaTime;
-
+                    rb2d.velocity = InputMove * speed * Time.fixedDeltaTime;
+                }
             }
+            
 
-            if (TransitioningToLevel && canmove)
-            {
-                rb2d.velocity = WalkIntoLevelDir * speed * Time.deltaTime;
-            }
 
             if (lookaheadDir.magnitude > 1.5)
                 LookAheadTransform.position = transform.position + new Vector3(Mathf.Clamp(lookaheadDir.x, -4, 4), Mathf.Clamp(lookaheadDir.y, -4, 4)) / 2f;
             else LookAheadTransform.position = transform.position;
         }
 
+        private void CheckForInputControlChange(object obj, InputActionChange change)
+        {
+            if (change == InputActionChange.ActionPerformed)
+            {
+                var inputAction = (InputAction)obj;
+                var lastControl = inputAction.activeControl;
+                var lastDevice = lastControl.device;
+
+                //Debug.Log($"device is gamepad: {lastDevice is Gamepad}");
 
 
-        public void MovementInput()
+
+                ControllerType TypeofController = lastDevice is Keyboard || lastDevice is Mouse ? ControllerType.Keyboard : ControllerType.GamePad;
+
+                //Debug.Log($"device is :{TypeofController.ToString()} ");
+
+                if (UITextNotificationController.instance != null)
+                {
+                    UITextNotificationController.instance.CheckControllerChange(TypeofController);
+                }
+            }
+        }
+
+        void UIAcceptInput(InputAction.CallbackContext ctx)
+        {
+            AcceptAction?.Invoke();
+        }
+
+        void InventoryInput(InputAction.CallbackContext ctx)
+        {
+            playeranim.SetTrigger("Inventory");
+        }
+
+        void AttackInput(InputAction.CallbackContext ctx)
+        {
+            if (ctx.interaction is HoldInteraction) playeranim.SetTrigger("HoldPunch");
+            else
+            {
+                playeranim.SetTrigger("ATK"); 
+            }
+        }
+
+        void PauseInput(InputAction.CallbackContext ctx)
+        {
+            PauseUI.instantce.ShowPauseMenu();
+        }
+
+
+        void MovementInput()
         {
             if (!TransitioningToLevel && InputMove.magnitude > .2f)
             {
@@ -365,32 +369,20 @@ namespace topdown
 
         }
 
-        private void OnAcceptButton(InputAction.CallbackContext context)
+        void DashInput(InputAction.CallbackContext ctx)
         {
-            var value = context.ReadValue<float>();
-            //Debug.Log("pressing accept");
-            PressedAccept = (context.duration < .1) && (context.started);
-            PressedAccept = true;
-            //inventory.ConsumeItem = true;
+            if( move.magnitude > .2 && currentstam > 30)
+            playeranim.SetTrigger("dash");
+        }
 
-            if (InDialogue)
-            {
-                //uidialogue.MarkLineComplete();
-            }
-            //print("current device pressed from accept is " + context.control.device.displayName);
-
-            if (DialoguePlayer != null && !InDialogue)
-            {
-                //DialoguePlayer.CheckForNearbyNPC();
-            }
-
+        private void OnInteract(InputAction.CallbackContext context)
+        {
             _itemSelectionManager.InteractWithObject();
         }
 
         void onMoveInput(InputAction.CallbackContext context)
         {
             var value = context.ReadValue<Vector2>();
-            moving = true;
             InputMove = value.normalized;
             //print("input move is " + InputMove);
         }
@@ -410,24 +402,24 @@ namespace topdown
         }
 
 
-        public void ControlSlicer()
-        {
-            if (!sliceObj) return;
-            if (!sliceObj.isActiveAndEnabled) return;
-            sliceObj.MouseInputPos = InputMousePos;
-            //print("slice mouse input is " + InputMousePos);
-            if(Attacking)
-            {
-                print("slicer attack");
-                Attacking = false;
-            }
-            if( _inputActions.Player.Attack.WasPerformedThisFrame())
-                {
-                print("attack performed this frame");
+        //public void ControlSlicer()
+        //{
+        //    if (!sliceObj) return;
+        //    if (!sliceObj.isActiveAndEnabled) return;
+        //    sliceObj.MouseInputPos = InputMousePos;
+        //    //print("slice mouse input is " + InputMousePos);
+        //    if(Attacking)
+        //    {
+        //        print("slicer attack");
+        //        Attacking = false;
+        //    }
+        //    if( _inputActions.Player.Attack.WasPerformedThisFrame())
+        //        {
+        //        print("attack performed this frame");
 
-                sliceObj.MouseClick();
-            }
-        }
+        //        sliceObj.MouseClick();
+        //    }
+        //}
 
         public void ActivateParry(bool activate)
         {
@@ -439,7 +431,7 @@ namespace topdown
 
 
 
-
+        //move this code to a seperate class that checks for animation states
         public void FinishedAction(int tutnum)
         {
 
@@ -540,25 +532,17 @@ namespace topdown
 
         }
 
-        public bool CanDash()
-        {
-            if (Dashing && move.magnitude > .2 && canmove && currentstam > 30)
-            {
+      
 
-                return true;
-            }
-            return false;
-        }
-
-        public bool CanHoldDash()
-        {
-            if (Dashing && move.magnitude < .2 && canmove && currentstam > 50)
-            {
-                currentstam -= 50;
-                return true;
-            }
-            return false;
-        }
+        //public bool CanHoldDash()
+        //{
+        //    if (Dashing && move.magnitude < .2  && currentstam > 50)
+        //    {
+        //        currentstam -= 50;
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
         public void ReduceStamina(int stam)
         {
@@ -617,7 +601,6 @@ namespace topdown
                 print("inventory close setting trigger to throw");
                 playeranim.SetTrigger("Throw");
                 OpenInventory = false;
-                canmove = true;
             }
 
         }
@@ -635,7 +618,6 @@ namespace topdown
         void attemptTodash()
         {
             Debug.Log("attempt to dash");
-            isdashing = true;
             dashtimeleft = dashtime;
             lastdash = Time.time;
             if (afterImgPool.instance == null)
@@ -675,7 +657,6 @@ namespace topdown
         //changes rb2d velocity
         void checkdash()
         {
-            canmove = false;
             Vector3 dashdir = dashspeed * lastpointeddir;
             rb2d.velocity = Vector3.ClampMagnitude(dashdir, magclamp);
             dashtimeleft -= Time.deltaTime;
@@ -789,14 +770,12 @@ namespace topdown
 
             rb2d.velocity = Vector2.zero;
             rb2d.bodyType = RigidbodyType2D.Kinematic;
-            canmove = false;
             movedir = Vector3.zero;
         }
 
         public void Offledge()
         {
             rb2d.bodyType = RigidbodyType2D.Dynamic;
-            canmove = true;
         }
 
 
@@ -972,26 +951,29 @@ namespace topdown
 
         public void SlowmodeInput(InputAction.CallbackContext ctx)
         {
-
-
-            if (currentstam > 1)
+            if (ctx.performed)
             {
-                //activate slowmode effects on slowmode manager
-                postProcessCtrl.SetBlurActive(true);
-                if (Time.timeScale > .51)
+
+                if (currentstam > 1)
                 {
-                    Time.timeScale = .5f;
+                    //activate slowmode effects on slowmode manager
+                    postProcessCtrl.SetBlurActive(true);
+                    if (Time.timeScale > .51)
+                    {
+                        Time.timeScale = .5f;
+                    }
+                }
+                else
+                {
+                    postProcessCtrl.SetBlurActive(false);
+                    Time.timeScale = 1;
                 }
             }
-            else
+            else if(ctx.canceled)
             {
-                postProcessCtrl.SetBlurActive(false);
+                print("canceled slowmo"); 
+                postProcessCtrl.SetBlurActive(false); 
                 Time.timeScale = 1;
-            }
-            //var bttn = ctx.ReadValueAsButton;
-            if (!ctx.ReadValueAsButton())
-            {
-                postProcessCtrl.SetBlurActive(false);
             }
         }
 
@@ -1254,43 +1236,75 @@ namespace topdown
         }
 
 
-        public void SetWait()
+        //seperating code to use in SetDialogue() and SetTransition()
+        //public void SetWait()
+        //{
+        //    if (!InDialogue)
+        //    {
+        //        canmove = false;
+        //        move = Vector2.zero;
+        //        InDialogue = true;
+        //        _inputActions.Player.Disable();
+        //        _inputActions.UI.Enable();
+        //        print("Setting player to wait");
+        //        //only change view direction
+        //        //playeranim.SetTrigger("Wait");
+        //    }
+        //    else
+        //    {
+        //        canmove = true;
+        //        InDialogue = false;
+        //        _inputActions.Player.Enable();
+        //        print("Setting player to wait");
+        //        //only change view direction
+        //        //playeranim.SetTrigger("Wait");
+        //    }
+        //}
+
+        
+        public void SetUIControls(bool EnableUIControls)
         {
-            if (!InDialogue)
+
+            if (EnableUIControls)
             {
-                canmove = false;
-                move = Vector2.zero;
-                InDialogue = true;
+                print("enabling Ui controls");
                 _inputActions.Player.Disable();
                 _inputActions.UI.Enable();
-                print("Setting player to wait");
-                //only change view direction
-                //playeranim.SetTrigger("Wait");
+                //dialogue will advance with the event system
             }
             else
             {
-                canmove = true;
-                InDialogue = false;
+                print("enabling player controls");
                 _inputActions.Player.Enable();
-                print("Setting player to wait");
-                //only change view direction
-                //playeranim.SetTrigger("Wait");
+                _inputActions.UI.Disable();
+            }
+
+        }
+
+
+        public void EnableReadyPhase(bool Enable)
+        {
+            if(Enable)
+            {
+                SetUIControls(true);
+                AcceptAction = WalkIntoLevel;
             }
         }
 
+
         //first places player in a door of room 
-        public void WalkInDir(Vector2 pos, Vector2 Dir)
+        public void SetPosAndWalkDir(Vector2 pos, Vector2 Dir)
         {
-            canmove = false;
+            //canmove = false;
             WalkIntoLevelDir = Dir;
             //DisablePlayerCol();
-            SequenceDone = false;
+            //SequenceDone = false;
             transform.position = pos;
-            TransitioningToLevel = true;
+            //TransitioningToLevel = true;
             move = Vector2.zero;
             setVelocity(true);
             print("Setting walk dir");
-            playeranim.SetTrigger("Wait");
+            //playeranim.SetTrigger("Wait");
             //StartCoroutine(StartWalking(Dir));
         }
 
@@ -1315,7 +1329,7 @@ namespace topdown
             //return q;
         }
 
-        //makes the plaer walk in directon room after button input
+        //makes the player walk in directon room after button input
         public void WalkIntoLevel()
         {
             playeranim.SetTrigger("RoomEnter");
@@ -1324,6 +1338,7 @@ namespace topdown
             print("Level started set to true");
             //DisablePlayerCol();
             move = Vector3.zero;
+            AcceptAction -= WalkIntoLevel;
             StartCoroutine(StartWalking(WalkIntoLevelDir));
 
         }
@@ -1341,7 +1356,6 @@ namespace topdown
             yield return new WaitForEndOfFrame();
             print("player started walking coroutine started. level transition set to true");
             //Gmanager.instance.LevelTransition = true;
-            canmove = true;
             print("started walking co routine towards dir" + Dir);
 
             //yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) && SequenceDone);
@@ -1352,11 +1366,7 @@ namespace topdown
             {
                 InputMove = Dir.normalized;
                 secondstoReach -= Time.deltaTime;
-                if (moving)
-                {
-                    print("player canceled walking coroutine");
-                    secondstoReach = 0;
-                }
+                
                 yield return null;
             }
             move = Vector3.zero;

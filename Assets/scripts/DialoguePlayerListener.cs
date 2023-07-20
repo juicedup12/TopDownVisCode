@@ -8,8 +8,7 @@ using UnityEngine.Events;
 //class for starting dialogue and listening to player input
 public class DialoguePlayerListener : MonoBehaviour
 {
-    [SerializeField]
-    player _player;
+
     [SerializeField]
     DialogueRunner Dialogue;
     [SerializeField]
@@ -18,7 +17,11 @@ public class DialoguePlayerListener : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+    }
+
+    private void OnDisable()
+    {
+        Dialogue.onDialogueComplete.RemoveAllListeners();
     }
 
     // Update is called once per frame
@@ -31,10 +34,10 @@ public class DialoguePlayerListener : MonoBehaviour
     {
 
         //Dialogue.Stop();
-        _player.SetWait();
+        //_player.SetWait();
         //Dialogue.StartDialogue(Node);
         //Dialogue.onDialogueComplete.AddListener( () => _player.SetWait());
-        Dialogue.AddCommandHandler("invoke", () => DialogueCommand.Invoke());
+        //Dialogue.AddCommandHandler("invoke", () => DialogueCommand.Invoke());
         
     }
 

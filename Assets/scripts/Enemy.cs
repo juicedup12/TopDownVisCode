@@ -39,7 +39,7 @@ namespace topdown
         public Vector3 addAngle;
         public bool pathcreated = false;
         public Vector3 OrientTo;
-        [HideInInspector]
+        //[HideInInspector]
         public bool CantMove;
         public int AtWaypoint = 0;
         public int AtTarget = 1;
@@ -51,12 +51,16 @@ namespace topdown
         bool Reenabled = false;
         protected bool dead = false;
         public bool IsDead { get { return dead; } }
+        AnimatorTimeController animatorTime;
+        [SerializeField] LayerMask wallmask;
 
 
         protected virtual void Awake()
         { 
             anim = GetComponent<Animator>();
-            playertransform = GameObject.Find("Player ").transform;
+            animatorTime = GetComponent<AnimatorTimeController>();
+            playertransform = GameObject.Find("Player").transform;
+            player = playertransform.GetComponent<player>();
         }
         
 
@@ -94,7 +98,11 @@ namespace topdown
                     {
                         if (requestManager != null)
                         {
-                            requestManager.RequestPath((Vector2)transform.position - gridpos,(Vector2)target - gridpos, OnPathFound, offset);
+                            Vector2 Startpos = (Vector2)transform.position;
+                            Vector2 Endpos = (Vector2)target;
+                            print("requesting path from " + Startpos + " to " + Endpos);
+                            requestManager.RequestPath(Startpos, Endpos, OnPathFound, offset);
+
                             targetlastpos = target;
                             timer = Pathfindwait;
                         }
@@ -121,6 +129,7 @@ namespace topdown
                 }
                 facetarget();
             }
+            
         }
 
         private void OnEnable()
@@ -139,6 +148,46 @@ namespace topdown
             chasingplayer = false;
         }
 
+
+        public void ChoosePatrolPoints()
+        {
+                float PatrolDirChance = Random.value;
+                Patrolpoints = PatrolDirChance < .5 ? setPatrolPoints(transform.position, Vector2.right) : setPatrolPoints(transform.position, Vector2.up);
+                //patrolPointDist = Vector2.Distance(Patrolpoints[0], Patrolpoints[1]);
+
+
+            Debug.Log("Patrol points are " + Patrolpoints[0] + " " + Patrolpoints[1]);
+            CantMove = false;
+        }
+
+        Vector2[] setPatrolPoints(Vector2 Point, Vector2 Direction)
+        {
+            Vector2[] patrolpoints = new Vector2[2];
+            RaycastHit2D FirstHit;
+            RaycastHit2D Second;
+
+            FirstHit = Physics2D.Raycast(Point, Direction, 20, wallmask);
+            print("getting first raycast from " + Point + " and " + (Point + Direction * 20));
+            if (FirstHit.collider != null)
+                Debug.Log("First hit " + FirstHit.collider.name + " patrol point 0 is " + FirstHit.point, FirstHit.collider.gameObject);
+            else
+                Debug.Log("first patrol raycast didn't hit anything");
+            //might have to use transform.position.y + Vector3.up * gridworldsize.y / 2
+            Second = Physics2D.Raycast(Point, Direction * -1, 20, wallmask);
+            Debug.Log("getting Second raycass starting from" + Point + " and " + (Point + Direction * -1 * 20) + " bitmask is " + LayerMask.NameToLayer("wall"));
+            Debug.Log(Second.collider == null ? "second raycast hit nothing" : "right raycast hit " + Second.collider.name + " patrol point 1 is " + Second.point);
+            Debug.DrawRay(Point, Direction * 20, Color.green, 20);
+            Debug.DrawRay(Point, Direction * -1 * 20, Color.red, 20);
+
+
+
+            //float PointPadding = .25f;
+            //patrolpoints[0] = FirstHit.collider == null ? new Vector2(Point.x, transform.position.y + (gridworldsize.y - .3f) / 2) : FirstHit.point + new Vector2(PointPadding, 0);
+            patrolpoints[0] = FirstHit.point;
+            //patrolpoints[1] = Second.collider == null ? new Vector2(Point.x, transform.position.y - (gridworldsize.y + .3f) / 2) : Second.point + new Vector2(-PointPadding, 0);
+            patrolpoints[1] =  Second.point ;
+            return patrolpoints;
+        }
 
         public void UsePotion(int amount)
         {
@@ -206,11 +255,11 @@ namespace topdown
 
         public void searchforPlayer()
         {
-            if (!Gmanager.instance.LevelStarted)
-            {
-                //print("level not started");
-                return;
-            }
+            //if (!Gmanager.instance.LevelStarted)
+            //{
+            //    //print("level not started");
+            //    return;
+            //}
 
             if (playertransform == null)
             {
@@ -271,6 +320,33 @@ namespace topdown
                 //}
             }
         }
+
+        public void SetSpawnState(bool IsEnabled)
+        {
+            if (IsEnabled)
+            {
+                print(gameObject + " getting animator time controller");
+                //if (!animatorTime) animatorTime = GetComponent<AnimatorTimeController>();
+                //animatorTime.enabled = IsEnabled;
+                anim.Play("EnemySpawn");
+            }
+            else
+            {
+                print(gameObject + " disabling animator time controller");
+                anim.SetTrigger("patrol");
+
+            }
+        }
+
+        public void SpawnAnimation(float time)
+        {
+            //if (animatorTime)
+            //    animatorTime.SetTime(time);
+            //else print("No animator time controller on " + gameObject);
+            anim.SetFloat("SpawnTime", time);
+                                    
+        }
+
 
         //looks at the player
         public void OrientToPlayer()

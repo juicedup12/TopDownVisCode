@@ -7,7 +7,6 @@ namespace topdown
         public override void OnSLStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             
-            m_MonoBehaviour.MovementInput();
             m_MonoBehaviour.dashATK();
             
             

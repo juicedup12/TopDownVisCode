@@ -42,9 +42,9 @@ public class ObjectTransitionBehavior : PlayableBehaviour
     public override void ProcessFrame(Playable playable, FrameData info, object playerData)
     {
         if (playerData == null) return;
-        TileGroupTransition group = playerData as TileGroupTransition;
+        GroupTransition group = playerData as GroupTransition;
         float time = (float)playable.GetTime();
-        group.LerpObjects(duration, time);
+        group.IterateGroup(duration, time);
     }
 
 }

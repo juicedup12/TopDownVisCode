@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+
+//class for holding data about tiles
 [Serializable]
 public class TileContainer
 {
@@ -14,14 +16,17 @@ public class TileContainer
     {
         public Vector3Int TilePos;
         public float TileZAngle;
+        public bool FinishedTransition;
 
         public TileTransform (Vector3Int tilepos, float Zangle)
         {
             TilePos = tilepos;
             TileZAngle = Zangle;
+            FinishedTransition = false;
         }
     }
 
+    //data handler scriptable objects provides data
     public void RegisterTile(Vector3Int tilepos,  float angle = 0)
     {
         if (TileTransforms != null)

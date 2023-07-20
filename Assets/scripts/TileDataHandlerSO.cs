@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //[CreateAssetMenu(fileName = "TilePlacementData", menuName = "ScriptableObjects/TilePlacementSO", order = 1)]
-public class TileDataHandlerSO : ScriptableObject
+public class TileDataHandlerSO : ScriptableObject, ITileTransitionClient
 {
     
     //[SerializeField]  TileContainer[] tiles;
@@ -21,8 +21,15 @@ public class TileDataHandlerSO : ScriptableObject
         
     //}
 
-    public virtual TileContainer.TileTransform[] GetTileTransforms { get ;  } 
+    //called by rooms or any object requesting data that was written with settiledata
+    public virtual TileContainer.TileTransform[] GetTileTransforms { get ;  }
 
+    public TileContainer.TileTransform[] GetTilesToTransform => GetTileTransforms;
+
+    [SerializeField] TileGroupTransitionType transitionType;
+    public TileGroupTransitionType GetTileTransitionType => transitionType;
+
+    //called byby grid brush
     public virtual void SetTileData(Vector3Int tilepos, float angle = 0)
     {
         Debug.Log($"setting tile data for tilepos {tilepos} with angle {angle}");

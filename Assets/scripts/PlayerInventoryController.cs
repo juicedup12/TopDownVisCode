@@ -52,7 +52,6 @@ public class PlayerInventoryController : MonoBehaviour
                 //return;
             }
             print("there are " + items.Count + " items in inventory");
-            Playerref.canmove = false;
             //uIInventory.ShowUIInventory();
             RadInventory.gameObject.SetActive(true);
 
@@ -137,7 +136,8 @@ public class PlayerInventoryController : MonoBehaviour
         //allows player class to read and modify input variables
         Playerref.move = Vector3.zero;
         Playerref.MoveLookAhead();
-        Playerref.MovementInput();
+        //change to check for animator parameter values
+        //Playerref.MovementInput();
 
         if(InventoryDir > .2 || InventoryDir < -.2)
         {
@@ -190,21 +190,21 @@ public class PlayerInventoryController : MonoBehaviour
             Playerref.OpenInventory = false;
         }
 
-
+        //change to a seperate animation that checks for animator parameter
         //throw item
-        if(Playerref.Attacking)
-        {
+        //if(Playerref.Attacking)
+        //{
 
-            //move code into a seperate animation SMB where letting go of attack will throw the item
+        //    //move code into a seperate animation SMB where letting go of attack will throw the item
 
-            if (RadInventory.HighlightedButton != null)
-            {            //throw item 
-                print("throwing Item");
-                //use a get from player for the angle
+        //    if (RadInventory.HighlightedButton != null)
+        //    {            //throw item 
+        //        print("throwing Item");
+        //        //use a get from player for the angle
 
-                ShowInventory(true);
-            }
-        }
+        //        ShowInventory(true);
+        //    }
+        //}
 
         //identify
         if(Playerref.Parry)

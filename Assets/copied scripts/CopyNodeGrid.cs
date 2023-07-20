@@ -14,6 +14,8 @@ public class CopyNodeGrid : MonoBehaviour
     float nodeDiameter;
     int gridSizeX, gridSizeY;
 
+    [SerializeField] float NodeCastMultiplier;
+
     void Awake()
     {
         nodeDiameter = nodeRadius * 2;
@@ -53,7 +55,8 @@ public class CopyNodeGrid : MonoBehaviour
             for (int y = 0; y < gridSizeY; y++)
             {
                 Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.up * (y * nodeDiameter + nodeRadius);
-                Collider2D cast = Physics2D.OverlapArea(worldPoint, worldPoint + new Vector3(nodeRadius, -nodeRadius, 1), layerMask: unwalkableMask);
+                //Collider2D cast = Physics2D.OverlapArea(worldPoint, worldPoint + new Vector3(nodeRadius , -nodeRadius, 1) * NodeCastMultiplier, layerMask: unwalkableMask);
+                Collider2D cast = Physics2D.OverlapBox(worldPoint, new Vector2(nodeRadius, -nodeRadius) * NodeCastMultiplier, 0, unwalkableMask);
                 
                 bool walkable = (cast == null ) ;
 
@@ -113,13 +116,18 @@ public class CopyNodeGrid : MonoBehaviour
 
     public CopyNode NodeFromWorldPoint(Vector3 worldPosition)
     {
-        float percentX = (worldPosition.x + gridWorldSize.x / 2) / gridWorldSize.x;
-        float percentY = (worldPosition.y + gridWorldSize.y / 2) / gridWorldSize.y;
+        //float percentX = (worldPosition.x + gridWorldSize.x / 2) / gridWorldSize.x;
+        //float percentY = (worldPosition.y + gridWorldSize.y / 2) / gridWorldSize.y;
+        var percentX = (worldPosition.x - transform.position.x + gridWorldSize.x / 2) / gridWorldSize.x;
+
+        var percentY = (worldPosition.y - transform.position.y + gridWorldSize.y / 2) / gridWorldSize.y;
         percentX = Mathf.Clamp01(percentX);
         percentY = Mathf.Clamp01(percentY);
 
+
         int x = Mathf.RoundToInt((gridSizeX - 1) * percentX);
         int y = Mathf.RoundToInt((gridSizeY - 1) * percentY);
+
         return grid[x, y];
     }
 

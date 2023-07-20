@@ -186,14 +186,15 @@ public class CopyPathfinding : MonoBehaviour
 
         CopyNode startNode = grid.NodeFromWorldPoint(startPos);
         Vector3 directiontotarget = startPos - targetPos;
-        CopyNode targetNode = grid.NodeFromWorldPoint(targetPos + directiontotarget.normalized * offset);
+        //CopyNode targetNode = grid.NodeFromWorldPoint(targetPos + directiontotarget.normalized * offset);
+        CopyNode targetNode = grid.NodeFromWorldPoint(targetPos );
 
         //if theres a wall and offset is unwalkable go to plyaer
         if (checkBetween(startPos, targetPos) && CheckOffset(targetNode,startPos , targetPos))
         {
             //offset = 0;
             targetNode = grid.NodeFromWorldPoint(targetPos);
-            //CodeMonkey.CMDebug.TextPopup("raycast hit and offset in wall", transform.position);
+            CodeMonkey.CMDebug.TextPopup("raycast hit and offset in wall", transform.position);
         }
         
 
@@ -236,12 +237,12 @@ public class CopyPathfinding : MonoBehaviour
                 }
             }
         }
-        else
-        {
-            Debug.Log("fleeing, target node is "  + targetPos);
-            StartCoroutine(fleepath(startPos, targetPos));
-            yield return null;
-        }
+        //else
+        //{
+        //    Debug.Log("fleeing, target node is "  + targetPos);
+        //    StartCoroutine(fleepath(startPos, targetPos));
+        //    yield return null;
+        //}
 
         if (pathSuccess)
         {
@@ -278,9 +279,11 @@ public class CopyPathfinding : MonoBehaviour
         List<Vector3> waypoints = new List<Vector3>();
         Vector2 directionOld = Vector2.zero;
 
+
         for (int i = 1; i < path.Count; i++)
         {
             Vector2 directionNew = new Vector2(path[i - 1].gridX - path[i].gridX, path[i - 1].gridY - path[i].gridY);
+
             if (directionNew != directionOld)
             {
                 waypoints.Add(path[i - 1].worldPosition);

@@ -389,7 +389,7 @@ public class Slicer : MonoBehaviour
         yield return new WaitForEndOfFrame();
         MeshToCut.GetComponent<MeshRenderer>().material = cap.ColorChangemat;
         MeshToCut.SetActive(true);
-        _player.WalkInDir(NextDoor.transform.position, PlayerMoveDir);
+        _player.SetPosAndWalkDir(NextDoor.transform.position, PlayerMoveDir);
 
         yield return new WaitForSecondsRealtime(PauseTime);
         print("resuming time");

@@ -23,7 +23,7 @@ class PresetLevelCreator : MonoBehaviour, iStageBuild
             Transitioners[i] = TransitionObjects[i].GetComponent<IRoomTransitioner>();
         }
         print(_Player == null ? "no player " : " Player assigned ");
-        _Player.WalkInDir(ActiveDoor.position, Vector2.up);
+        _Player.SetPosAndWalkDir(ActiveDoor.position, Vector2.up);
     }
 
     //moves to next roomtransitioner whenever this is called until it reaches the final one

@@ -3,26 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-
-public class UnityEventInteraction : MonoBehaviour, Iinteractable
+namespace topdown
 {
-    public UnityEvent OnInteract;
-
-    public void interact()
+    public class UnityEventInteraction : MonoBehaviour, Iinteractable
     {
-        print("Unity event called");
-        OnInteract?.Invoke();
-    }
+        public UnityEvent OnInteract;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+        public void interact()
+        {
+            print("Unity event called");
+            OnInteract?.Invoke();
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Start is called before the first frame update
+        void Start()
+        {
+
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
     }
 }

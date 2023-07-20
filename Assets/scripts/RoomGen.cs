@@ -1,5 +1,5 @@
 ﻿using DG.Tweening;
-
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +9,7 @@ using UnityEngine.Experimental.Rendering.Universal;
 namespace topdown
 {
     //need this to inherit from iLevelBuild
-    public class RoomGen : MonoBehaviour 
+    public class RoomGen : BaseRoom, ITileTransitionDataProvider, ISpawnTransitionDataProvider, ISubroomTransitionDataProvider
     {
         //local space vectors
         public float EdgeOffset;
@@ -23,7 +23,6 @@ namespace topdown
         public float TileMultiplier;
         public delegate void DoorAction(Vector2 pos ,Vector2 dir);
         public GameObject TileHolder;
-        public static event DoorAction OnDoor;
         Tween walltween;
         public bool SpawnOnKey = false;
         public LayerMask wallmask;
@@ -32,6 +31,12 @@ namespace topdown
         Transform[,] Tiles;
         [SerializeField]
         TransitionManager.Floortransition floor;
+        //can change tile data to an array and provide a random one to transition manager
+        [SerializeField] TileDataHandlerSO TileData;
+        //public TileGroupTransitionType GetTransitionType { get => tileGroupTransitionType; }
+        public TileDataHandlerSO GetTileDataHandler { get => TileData; }
+
+        private Vector3 OriginalPos;
 
         //world space positions of neighboring enterances
         public Transform EastNeighborPoint, WestNeighborPoint, NorthNeighborPoint, SouthNeighborPoint;
@@ -57,41 +62,50 @@ namespace topdown
         public GameObject verticalwallprefab;
         public GameObject horizontalwallprefab;
         List<GameObject> roomgameobjects = new List<GameObject>();
+        public List<GameObject> GetSubrooms { get => roomgameobjects; }
         GameObject[] enemyPrefabs;
         public player player;
         public List<Transform> TweenObjects;
         CopyNodeGrid nodegrid;
         public GameObject InnerRoomLight;
         [SerializeField] GameObject SubRoomBase;
+        [SerializeField] RandomAnimationsContainerSO animationsContainer;
+        GameObject[] SpawnedEnemies;
+        public GameObject[] GetSpawnObjects { get => SpawnedEnemies; }
 
         public player _player { set => this.player = value; }
 
+        public AnimatorTimeController[] GetTimeControllers => GetComponentsInChildren<AnimatorTimeController>();
+        bool HasInitialisedRoom = false;
+
         void Awake()
         {
+            Doors = GetComponentsInChildren<LevelChangeInteract>();
             
+        }
+
+        //Start is called before the first frame update
+        void InitialiseRoom()
+        {
+
             nodediameter = noderadius * 2;
             gridsizeX = Mathf.RoundToInt(gridworldsize.x / nodediameter);
             gridsizeY = Mathf.RoundToInt(gridworldsize.y / nodediameter);
             worldbottomleft = transform.position - Vector3.right * gridworldsize.x / 2 - Vector3.up * gridworldsize.y / 2;
             //player = GameObject.Find("Player ").GetComponent<player>();
-        }
-
-        //Start is called before the first frame update
-        void Start()
-        {
             //TileHolder = GameObject.Find("TileParent");
-            //enemyPrefabs = roomdata.enemies;
+            enemyPrefabs = roomdata.enemies;
             //nodegrid = GetComponentInChildren<CopyNodeGrid>();
             creategrid();
             //createTilegridPositions();
-            //EntrancePointsToGridCoordinates();
+            EntrancePointsToGridCoordinates();
 
             //CameraManager.instance.TransferCam(gameObject);
             ////put walls in a sequence
             //WallsToSeq();
 
             MakeRandomRooms();
-            //ChangeGridEmpty();
+            ChangeGridEmpty();
             //ChangeGridInRoom();
             //StartCoroutine( StartTweening());
             //StartCoroutine(BeginTween());
@@ -100,7 +114,7 @@ namespace topdown
 
 
             //makewall();
-            //SpawnEnemy();
+            CalculateEnemySpawn();
 
 
 
@@ -110,11 +124,74 @@ namespace topdown
             //OuterWallsFallInTween();
             //RotateRooms();
             //RotateFloorTiles();
-            RoomController.Instance.AssignTimeControllers(this);
-            RandomAnimationProvider.Instance.AssignRandomSubRoomAnimation(roomgameobjects.ToArray());
+            //RoomController.Instance.AssignTimeControllers(this);
+
+            /*
+             * need to assign rand animation clip with scriptable object, not an instance
+             */
+            //if(RandomAnimationProvider.Instance)
+            //RandomAnimationProvider.Instance.AssignRandomSubRoomAnimation(roomgameobjects.ToArray());
+            /*
+             * and not here in awake, move it to  
+                    MakeRandomRooms();
+             */
+
+
+
+            //if (RoomTransitionManager.Instance)
+            //RoomTransitionManager.Instance.PlayRoomEnterTransition(this);
+            
+            //call this here to ensure rooms and enemies, etc. are created before sending them to transition managers
+            //InitialiseTransition();
                
         }
 
+        public override void OnTransitionFinish()
+        {
+            print(gameObject + " finished transition");
+        }
+
+        public override void SetRoomActive()
+        {
+            if(!HasInitialisedRoom)
+            {
+                InitialiseRoom();
+            }
+            print("setting " + gameObject + " to active");
+
+            base.SetRoomActive();
+            //need to call initialise transition here if start has already been called before
+        }
+
+
+
+        void InitialiseTransition()
+        {
+            print("initialising transition");
+            if (TileData != null)
+            {
+                //designate tile by type 
+                //tileTransitionManger.DesignateTileGroupByType(TileData);
+            }
+
+            //access a property and assign
+            AnimatorTimeController[] timeControllers = GetComponentsInChildren<AnimatorTimeController>();
+            if (timeControllers != null)
+            {
+                //SubRoomController.SetTimeControllers = timeControllers;
+                print("time controller total in " + gameObject + " is " + timeControllers.Length);
+            }
+
+            //going to try and have transition manager activate the room control timeline after it activates a room gen
+            //RoomControlTimeline.Play();
+        }
+
+        public void DeactivateRoom()
+        {
+            print("deactivating " + gameObject);
+            transform.position = OriginalPos;
+            gameObject.SetActive(false);
+        }
 
         //fix later to remove yield statements
         public void SetupLevels()
@@ -334,92 +411,79 @@ namespace topdown
             }
         }
         
-        //move to a seperate class
-        public Sequence SpawnEnemy()
+        //loops through random room tiles
+        public void CalculateEnemySpawn()
         {
-            if (enemyPrefabs.Length < 1) return null;
+            if (enemyPrefabs.Length < 1 || !RoomGenSpawnManager.instance) return;
             int enemycount = 0;
-
-            Sequence SpawnSeq = DOTween.Sequence();
+            RoomGenSpawnManager.instance.ResetEnemies();
+            //Sequence SpawnSeq = DOTween.Sequence();
 
             //Debug.Log("this room is number " + LevelCreator.GetRoomInOrder(transform) + " in the list", gameObject);
             int ListPos = ProcedualLevelCreator.GetRoomInOrder(transform);
             float IndexFraction = (float)ListPos / (float)8;
             //Debug.Log("index fraction is " + IndexFraction + " in list pos " + ListPos);
-            float MaxEnemySpawn =  (Random.Range(10, 20)  * IndexFraction) + 4;
+            float MaxEnemySpawn =  (UnityEngine.Random.Range(10, 20)  * IndexFraction) + 4;
             //Debug.Log("Max enemy spawn is " + MaxEnemySpawn, gameObject);
-            int EnemySpawnAmount =  Random.Range(2,(int) MaxEnemySpawn);
+            int EnemySpawnAmount =  UnityEngine.Random.Range(2,(int) MaxEnemySpawn);
             //Debug.Log(ListPos + " Room spawning " + EnemySpawnAmount);
-            if(EnemySpawnAmount >0)
-            do
+            SpawnedEnemies = new GameObject[EnemySpawnAmount];
+            if (EnemySpawnAmount > 0)
             {
-                
-                Room.Roomtile TileToSpawn = GetRandomRoomTile();
-                if (TileToSpawn.empty == true)
+                do
                 {
-                        Debug.Log("Enemy tiles spawn point" + TileToSpawn.point + " is " + TileToSpawn.empty);
-                    int enemynum = Random.Range(0, enemyPrefabs.Length);
-                    Enemy enemy = Instantiate(enemyPrefabs[enemynum], TileToSpawn.point, Quaternion.identity).GetComponent<Enemy>();
-                        enemy.player = player;
-                    enemy.transform.parent = gameObject.transform;
-                    SpawnSeq.Insert(enemycount, enemy.transform.DOPunchScale(enemy.transform.localScale + new Vector3(5,-.6f,0), .8f, 1, 1f).SetEase(roomdata.enemyScaleEase).OnStart(() => enemy.gameObject.SetActive(true)));
-                    SpawnSeq.Insert(enemycount, enemy.transform.DOPunchPosition( new Vector2(0, -.4f), .4f, 1,1).SetEase(roomdata.enemyLowerEase));
-                    //Debug.Log("doing punch pos to " + (transform.localPosition + new Vector3(0, -1f)) + "from " + transform.localPosition + "where trans.pos is " +  )
-                    SpawnSeq.Insert( enemycount + .2f , enemy.transform.DOPunchPosition(new Vector3(0, .6f, 0), .4f, 1, 1).SetEase(roomdata.enemyHopEase));
-                    enemycount++;
-                    TileToSpawn.empty = false;
-                    StartCoroutine(SetEnemyPatrolPoints(enemy.GetComponent<Enemy>(), TileToSpawn.point));
-                    
 
-                }
-            } while (enemycount < EnemySpawnAmount);
+                    Room.Roomtile TileToSpawn = GetRandomRoomTile();
+                    if (TileToSpawn.empty == true)
+                    {
+                        Debug.Log("Enemy tiles spawn point" + TileToSpawn.point + " is " + TileToSpawn.empty);
+                        int enemynum = UnityEngine.Random.Range(0, enemyPrefabs.Length);
+
+                        GameObject enemyPrefab = enemyPrefabs[enemynum];
+
+                        //SpawnSeq.Insert(enemycount, enemy.transform.DOPunchScale(enemy.transform.localScale + new Vector3(5,-.6f,0), .8f, 1, 1f).SetEase(roomdata.enemyScaleEase).OnStart(() => enemy.gameObject.SetActive(true)));
+                        //SpawnSeq.Insert(enemycount, enemy.transform.DOPunchPosition( new Vector2(0, -.4f), .4f, 1,1).SetEase(roomdata.enemyLowerEase));
+                        //Debug.Log("doing punch pos to " + (transform.localPosition + new Vector3(0, -1f)) + "from " + transform.localPosition + "where trans.pos is " +  )
+                        //SpawnSeq.Insert( enemycount + .2f , enemy.transform.DOPunchPosition(new Vector3(0, .6f, 0), .4f, 1, 1).SetEase(roomdata.enemyHopEase));
+                        
+                        TileToSpawn.empty = false;
+                        //StartCoroutine(SetEnemyPatrolPoints(enemy.GetComponent<Enemy>(), TileToSpawn.point));
+                        //RoomGenSpawnManager.instance.CreateEnemy(TileToSpawn.point, enemyPrefab, gameObject.transform);
+                        Debug.Log("Enemy tiles spawn point" + TileToSpawn.point);
+                        Enemy enemy = Instantiate(enemyPrefab, TileToSpawn.point, Quaternion.identity).GetComponent<Enemy>();
+                        enemy.gameObject.SetActive(false);
+                        enemy.transform.parent = transform;
+                        SpawnedEnemies[enemycount] = enemy.gameObject;
+                        enemycount++;
+                    }
+                } while (enemycount < EnemySpawnAmount);
+                //using events to pass data to transition script
+                //if (enemySpawnTransition)
+                //{
+                //    print(gameObject + " setting spawn objects for " + enemySpawnTransition);
+                //    enemySpawnTransition.SetSpawnObjects = SpawnedEnemies;
+                //}
+            }
             //SpawnSeq.OnKill( () =>
             //{
             //    print("spawn enemy seq complete");
             //    player.SequenceDone = true;
             //    Gmanager.instance.ReturnToPlayer();
             //});
-            return SpawnSeq;
+            //return SpawnSeq;
         }
 
 
 
         Room.Roomtile GetRandomRoomTile()
         {
-            int randomx = Random.Range(0, grid.GetLength(0));
-            int randomy = Random.Range(0, grid.GetLength(1));
+            int randomx = UnityEngine.Random.Range(0, grid.GetLength(0));
+            int randomy = UnityEngine.Random.Range(0, grid.GetLength(1));
             return grid[randomx, randomy]; 
         }
 
 
-        //this logic should be handled by enemy scripts
-        IEnumerator SetEnemyPatrolPoints(Enemy enemy, Vector2 TilePoint)
-        {
-            yield return new WaitForSeconds(6);
-            enemy.CantMove = true;
-            float PatrolDirChance = Random.value;
-            float patrolPointDist;
-            Vector2[] patrolpoints;
-            int iterations = 0;
-            do
-            {
-                iterations++;
-                patrolpoints = PatrolDirChance < .5 ? setVerticalPatrolPoints(enemy, TilePoint) : setHorizontalPatrolPoint(enemy, TilePoint);
-                patrolPointDist = Vector2.Distance(patrolpoints[0], patrolpoints[1]);
-                if(iterations > 20)
-                {
-                    patrolpoints[1] = GetRandomEmptyRoomTile();
-                    //print("breaking patrol assign while loop");
-                    break;
-                }
-            } while (patrolPointDist < 1);
-
-            enemy.Patrolpoints = patrolpoints;
-            //Debug.Log("Patrol points are " + patrolpoints[0] + " " + patrolpoints[1]);
-            yield return new WaitForSeconds(2);
-            enemy.CantMove = false;
-            yield return null;
-        }
+       
 
         //move to a procedual subtype
         Vector2 GetRandomEmptyRoomTile()
@@ -428,68 +492,25 @@ namespace topdown
             int RandomY;
             do
             {
-                RandomX = Random.Range(0, grid.GetLength(0) - 1);
-                RandomY = Random.Range(0, grid.GetLength(1) - 1);
+                RandomX = UnityEngine.Random.Range(0, grid.GetLength(0) - 1);
+                RandomY = UnityEngine.Random.Range(0, grid.GetLength(1) - 1);
             }
             while (grid[RandomX, RandomY].empty);
             return grid[RandomX, RandomY].point;
         }
 
-        //redundant, make a new method in enemy class that handles patrol logic better
-        Vector2[] setVerticalPatrolPoints(Enemy enemy, Vector2 TilePoint)
-        {
-            Vector2[] patrolpoints = new Vector2[2];
-            RaycastHit2D TopHit;
-            RaycastHit2D BottomHit;
-
-            TopHit = Physics2D.Raycast(enemy.transform.position, Vector2.up, 20, wallmask);
-            //Debug.Log("getting raycast from " + TilePoint + " and " + (TilePoint + Vector2.up * 20), enemy);
-            //if (TopHit.collider != null)
-            //    //Debug.Log("tophit hit " + TopHit.collider.name + " patrol point 0 is " + TopHit.point, TopHit.collider.gameObject);
-            //else
-            //    //Debug.Log("didn't hit anything, patrol point is " + new Vector2(TilePoint.x, transform.position.y + gridworldsize.y / 2), enemy);
-            ////might have to use transform.position.y + Vector3.up * gridworldsize.y / 2
-            BottomHit = Physics2D.Raycast(TilePoint, Vector2.down, 20, wallmask);
-            //Debug.Log("getting bottom raycass from " + TilePoint + " and " + (TilePoint + Vector2.down * 20) + " bitmask is " + LayerMask.NameToLayer("wall"), enemy);
-            //Debug.Log(BottomHit.collider == null ? "Bottom raycast hit nothing, patrol point is " + new Vector2(TilePoint.x, transform.position.y - (gridworldsize.y + .3f) / 2) : "bottom raycast hit " + BottomHit.collider.name + " patrol point 1 is " + BottomHit.point);
-
-            float PointPadding = .25f;
-            patrolpoints[0] = TopHit.collider == null ? new Vector2(TilePoint.x, transform.position.y + (gridworldsize.y - .3f) / 2) : TopHit.point - new Vector2(0, PointPadding);
-            patrolpoints[1] = BottomHit.collider == null ? new Vector2(TilePoint.x, transform.position.y - (gridworldsize.y + .3f) / 2) : BottomHit.point + new Vector2(0, PointPadding);
-            return patrolpoints;
-        }
-
-        Vector2[] setHorizontalPatrolPoint(Enemy enemy, Vector2 TilePoint)
-        {
-            Vector2[] patrolpoints = new Vector2[2];
-            RaycastHit2D LeftHit;
-            RaycastHit2D RightHit;
-
-            LeftHit = Physics2D.Raycast(enemy.transform.position, Vector2.left, 20, wallmask);
-            Debug.Log("getting Left raycast from " + TilePoint + " and " + (TilePoint + Vector2.up * 20), enemy);
-            if (LeftHit.collider != null)
-                Debug.Log("Left hit " + LeftHit.collider.name + " patrol point 0 is " + LeftHit.point, LeftHit.collider.gameObject);
-            else
-                Debug.Log("didn't hit anything, patrol point is " + new Vector2(TilePoint.x, transform.position.y + gridworldsize.y / 2), enemy);
-            //might have to use transform.position.y + Vector3.up * gridworldsize.y / 2
-            RightHit = Physics2D.Raycast(TilePoint, Vector2.right, 20, wallmask);
-            Debug.Log("getting Right raycass from " + TilePoint + " and " + (TilePoint + Vector2.down * 20) + " bitmask is " + LayerMask.NameToLayer("wall"), enemy);
-            Debug.Log(RightHit.collider == null ? "Right raycast hit nothing, patrol point is " + new Vector2(TilePoint.x, transform.position.y - (gridworldsize.y + .3f) / 2) : "right raycast hit " + RightHit.collider.name + " patrol point 1 is " + RightHit.point);
-
-            float PointPadding = .25f;
-            patrolpoints[0] = LeftHit.collider == null ? new Vector2(TilePoint.x, transform.position.y + (gridworldsize.y - .3f) / 2) : LeftHit.point + new Vector2(PointPadding, 0);
-            patrolpoints[1] = RightHit.collider == null ? new Vector2(TilePoint.x, transform.position.y - (gridworldsize.y + .3f) / 2) : RightHit.point + new Vector2(-PointPadding, 0);
-            return patrolpoints;
-        }
-
+       
         public void MakeRandomRooms()
         {
-            int rooms = Random.Range(0, 4);
+            int rooms = UnityEngine.Random.Range(0, 4);
+            print("making " + rooms + " rooms");
             if (rooms != 0)
                 for (int i = 0; i < rooms; i++)
                 {
                     makewall();
                 }
+            if(animationsContainer)
+            animationsContainer.AssignRandomSubRoomAnimation(roomgameobjects.ToArray());
         }
 
 
@@ -501,7 +522,6 @@ namespace topdown
             //why is there a list for objects and class references
             roomgameobjects.Add(roombase);
             RoomsList.Add(wall);
-
         }
 
         public static TweenCallback Setactive(GameObject gobject)
@@ -587,6 +607,8 @@ namespace topdown
 
         }
 
+
+
         private IEnumerator StartTweening()
         {
             //yield return new WaitForSeconds(.5f);
@@ -608,7 +630,7 @@ namespace topdown
                 LightsForLoop();
                 FullSeq.Insert(4, PlaceLightsInRooms());
                 //On complete code is inside spawn enemy
-                FullSeq.Append(SpawnEnemy());
+                //FullSeq.Append(SpawnEnemy());
                 FullSeq.onKill = () =>
                 {
                 //print("spawn enemy seq complete");
@@ -936,8 +958,8 @@ namespace topdown
             Room.Roomtile tile;
             do
             {
-                randomTileX = Random.Range(0, Tiles.GetLength(0));
-                randomTileY = Random.Range(0, Tiles.GetLength(1));
+                randomTileX = UnityEngine.Random.Range(0, Tiles.GetLength(0));
+                randomTileY = UnityEngine.Random.Range(0, Tiles.GetLength(1));
                 tile = NodeFromWorldPoint(Tiles[randomTileX, randomTileY].position);
             } while (!tile.empty);
 
@@ -946,7 +968,7 @@ namespace topdown
 
         void SpawnItem()
         {
-            int RanditemIndex = Random.Range(0, roomdata.ItemsToSpawn.Length);
+            int RanditemIndex = UnityEngine.Random.Range(0, roomdata.ItemsToSpawn.Length);
             Item item = Instantiate( roomdata.ItemsToSpawn[RanditemIndex]).GetComponent<Item>();
             Debug.Log("spawned item", item);
             item.transform.SetParent(GetRandomFloorTile(), false);
@@ -1019,7 +1041,7 @@ namespace topdown
                         Vector3 LightPos = room.startwall + new Vector2(QuartWidth, 0);
                         Debug.Log("quart width is " + QuartWidth + "light pos is " + LightPos, room.roombase);
                         Vector3 midpoint = (room.startwall + room.lastwall) * .5f;
-                        Color lightcolor = Random.ColorHSV(saturationMin: .3f, saturationMax: .8f, hueMax: 1, hueMin: 0, alphaMin: 100, alphaMax: 100, valueMin: .3f, valueMax: .6f);
+                        Color lightcolor = UnityEngine.Random.ColorHSV(saturationMin: .3f, saturationMax: .8f, hueMax: 1, hueMin: 0, alphaMin: 100, alphaMax: 100, valueMin: .3f, valueMax: .6f);
                         Light2D light1 = Instantiate(InnerRoomLight, midpoint + new Vector3(QuartWidth, 0), Quaternion.identity, gameObject.transform).GetComponent<Light2D>();
                         Light2D light2 = Instantiate(InnerRoomLight, midpoint - new Vector3(QuartWidth, 0), Quaternion.identity, gameObject.transform).GetComponent<Light2D>();
                         light1.color = lightcolor;
@@ -1035,7 +1057,7 @@ namespace topdown
                         Vector3 LightPos = room.startwall + new Vector2(QuartHeight, 0);
                         Debug.Log("quart height is " + QuartHeight + "light pos is " + LightPos, room.roombase);
                         Vector3 midpoint = (room.startwall + room.lastwall) * .5f;
-                        Color lightcolor = Random.ColorHSV(saturationMin: .3f, saturationMax: .8f, hueMax: 1, hueMin: 0, alphaMin: 100, alphaMax: 100, valueMin: .3f, valueMax: .6f);
+                        Color lightcolor = UnityEngine.Random.ColorHSV(saturationMin: .3f, saturationMax: .8f, hueMax: 1, hueMin: 0, alphaMin: 100, alphaMax: 100, valueMin: .3f, valueMax: .6f);
                         Light2D light1 = Instantiate(InnerRoomLight, midpoint + new Vector3(0, QuartHeight), Quaternion.identity, gameObject.transform).GetComponent<Light2D>();
                         Light2D light2 = Instantiate(InnerRoomLight, midpoint - new Vector3(0, QuartHeight), Quaternion.identity, gameObject.transform).GetComponent<Light2D>();
                         light1.color = lightcolor;
@@ -1052,7 +1074,7 @@ namespace topdown
                 foreach (Light2D light in lights)
                 {
                     seq.Insert(i, DOTween.To(() => light.intensity, x => light.intensity = x, 8, .6f));
-                    light.color = Random.ColorHSV(saturationMin: .3f, saturationMax: .8f, hueMax: 1, hueMin: 0, alphaMin: 100, alphaMax: 100, valueMin: .3f, valueMax: .6f);
+                    light.color = UnityEngine.Random.ColorHSV(saturationMin: .3f, saturationMax: .8f, hueMax: 1, hueMin: 0, alphaMin: 100, alphaMax: 100, valueMin: .3f, valueMax: .6f);
                     //light.pointLightOuterRadius = Mathf.Max(room.)
                     i++;
                 }
@@ -1263,24 +1285,36 @@ namespace topdown
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            if (collision.CompareTag("Player"))
-            {
-                //if the player exited AND the level transition is true
-                if (Gmanager.instance.LevelTransition && Gmanager.instance.LevelStarted)
-                {
-                    //did the player walk out of the warp zone
-                    Gmanager.instance.LevelTransition = false;
-                    Debug.Log("Player exited door warp. Level transition ended", gameObject);
-                }
+            //if (collision.CompareTag("Player"))
+            //{
+            //    //if the player exited AND the level transition is true
+            //    if (Gmanager.instance.LevelTransition && Gmanager.instance.LevelStarted)
+            //    {
+            //        //did the player walk out of the warp zone
+            //        Gmanager.instance.LevelTransition = false;
+            //        Debug.Log("Player exited door warp. Level transition ended", gameObject);
+            //    }
 
-                InteractUIBehavior.instance.HideUI();
-            }
+            //    InteractUIBehavior.instance.HideUI();
+            //}
 
         }
 
         public Vector2 getspawn()
         {
             throw new System.NotImplementedException();
+        }
+
+        public void OnTransitionEnd()
+        {
+            //give player control, by showing an option to enter room
+            throw new System.NotImplementedException();
+        }
+
+        public override Transform GetDoorFromDirection(DoorDirection doorDirection)
+        {
+            print("get door from direction called with " + doorDirection + " provided");
+            return DoorUtilities.RetrieveNeighborDoor(doorDirection, Doors);
         }
     }
 
